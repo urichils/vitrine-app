@@ -16,7 +16,11 @@ const portfolioSchema = new mongoose.Schema({
       link: String,
     },
   ],
-  skills: [String],
+  slug: {
+    type: String,
+    unique: true,
+    required: true
+  }
 })
 
 module.exports = mongoose.model('Portfolio', portfolioSchema);

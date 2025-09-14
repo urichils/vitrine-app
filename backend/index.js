@@ -30,17 +30,37 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 app.post('/portfolio', async (req, res) => {
   try {
-    if (User.plan === 'free') {
+    const user = await User.findById(req.user.id);
+    if (user.plan === 'free') {
       const count = await Portfolio.countDocuments({ userId: req.user.id });
       if (count > 1) {
         return res.status(400).json({ error: 'Free plans allow 1 portfolio. Please upgrade for more' });
       }
     }
+
+    if (!req.body.slug) {
+      return res.status(400).json({ error : 'Username required' });
+    }
+
+    const slug = req.body.slug.toLowerCase();
+
+    const exists = await Portfolio.findOne({ slug: new RegExp(`^${slug}$`, 'i') });
+
+    if (exists) {
+      return res.status(400).json({ error: 'Username already in use' });
+    }
+
+    // while (exists) {
+    //   slug = generateSlug(req.body.name || 'site');
+    //   exists = await Portfolio.findOne({ slug });
+    // }
+
     const portfolio = new Portfolio({
       ...req.body, userId: req.user.id
     });
     await portfolio.save();
     res.status(201).send(portfolio);
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -164,3 +184,16 @@ app.delete('/portfolio/:id', auth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.get('public/portfolio/:id', async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+      return res.status(404).json({ error: 'Portfolio not found' });
+    }
+    res.json(portfolio);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+})
+
