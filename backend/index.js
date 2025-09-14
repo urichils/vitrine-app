@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -11,6 +14,23 @@ const PORT = process.env.PORT || 4322;
 const Portfolio = require('./models/Portfolio.js');
 const User = require('./models/User.js');
 
+const auth = (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'No token, auth denied' });
+
+  console.log('Authorization header:', req.header('Authorization'));
+
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; 
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Token is not valid' });
+  }
+};
+
+
 app.get('/', (req, res) => {
   res.send('server is up idk');
 });
@@ -18,6 +38,8 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log('Server running on port 4322');
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -28,9 +50,10 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('Error connecting to MongoDB:', err);
 });
 
-app.post('/portfolio', async (req, res) => {
+app.post('/portfolio', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
     if (user.plan === 'free') {
       const count = await Portfolio.countDocuments({ userId: req.user.id });
       if (count > 1) {
@@ -62,6 +85,7 @@ app.post('/portfolio', async (req, res) => {
     res.status(201).send(portfolio);
 
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -71,6 +95,7 @@ app.get('/portfolio', auth, async (req, res) => {
     const portfolios = await Portfolio.find({ userId: req.user.id });
     res.json(portfolios);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -83,11 +108,13 @@ app.get('/portfolio/:userId', async (req, res) => {
     }
     return res.status(200).json(portfolio);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: error.message });
   }
 });
 
 app.post('/register', async (req, res) => {
+  console.log('route hit req.body:', req.body);
   try {
     const { email, password } = req.body;
 
@@ -120,29 +147,17 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token });
   } catch {
+    console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-const auth = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'No token, auth denied' });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
-    next();
-  } catch (err) {
-    res.status(401).json({ error: 'Token is not valid' });
-  }
-};
-
 app.patch('/upgrade', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({error: 'User not found'});
 
     user.plan = 'pro';
@@ -150,6 +165,7 @@ app.patch('/upgrade', auth, async (req, res) => {
 
     res.json({message: 'Upgraded successfully', plan: user.plan});
   } catch (err) {
+    console.error(err);
     res.status(500).json({error: 'Server error'});
   }
 });
@@ -163,9 +179,10 @@ app.put('/portfolio/:id', auth, async (req, res) => {
     );
     if (!portfolio) {
       return res.status(404).json({error: 'Portfolio not found' });
-      res.json(portfolio);
     }
+    res.json(portfolio);
   } catch(err) {
+    console.error(err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -181,19 +198,46 @@ app.delete('/portfolio/:id', auth, async (req, res) => {
     }
     res.json({ message: 'Portfolio deleted' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('public/portfolio/:id', async (req, res) => {
+app.get('/p/:slug', async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) {
-      return res.status(404).json({ error: 'Portfolio not found' });
-    }
+    const portfolio = await Portfolio.findOne({ slug: req.params.slug }).populate('userId', 'email');
+    if (!portfolio) return res.status(404).json({ error: 'Not found' });
     res.json(portfolio);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 })
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const upload = multer({ storage });
+
+app.post('/portfolio/:portfolioId/section/:sectionIndex/upload', auth, upload.array('images', 5), async (req, res) => {
+  try {
+    const { portfolioId, sectionIndex } = req.params;
+    const portfolio = await Portfolio.findOne({ _id: portfolioId, userId: req.user.id });
+    if (!portfolio) return res.status(404).json({ error: 'Portfolio not found' });
+
+    if (!portfolio.sections[sectionIndex]) return res.status(400).json({ error: 'Section not found' });
+
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+    const fileUrls = req.files.map(file => baseUrl + file.filename);
+    portfolio.sections[sectionIndex].images = fileUrls;
+
+    await portfolio.save();
+
+    res.json({ message: 'Images uploaded', images: fileUrls });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});

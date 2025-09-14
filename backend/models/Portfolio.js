@@ -23,4 +23,10 @@ const portfolioSchema = new mongoose.Schema({
   }
 })
 
+const sectionSchema = new mongoose.Schema({
+  type: { type: String, required: true },
+  content: { type: mongoose.Schema.Types.Mixed },
+  images: [{ type: String }]
+});
+
 module.exports = mongoose.model('Portfolio', portfolioSchema);
