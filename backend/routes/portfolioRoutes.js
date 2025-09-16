@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const router = express.Router();
 const Portfolio = require('../models/Portfolio');
 const User = require('../models/User');
@@ -22,7 +23,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 2 * 1024 * 1024 } });
 
 router.post('/', auth, async (req, res) => {
   try {
@@ -120,7 +121,16 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/:portfolioId/section/:sectionIndex/upload', auth, upload.array('images', 5), async (req, res) => {
+router.post('/:portfolioId/section/:sectionIndex/upload', auth, (req, res, next) => {
+  const uploader = upload.array('images', 5);
+
+  uploader(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
     const { portfolioId, sectionIndex } = req.params;
     const portfolio = await Portfolio.findOne({ _id: portfolioId, userId: req.user.id });
