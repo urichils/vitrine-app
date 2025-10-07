@@ -1,0 +1,33 @@
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode */
+body[data-theme='light'] .footer {
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Dark mode */
+body[data-theme='dark'] .footer {
+  background: rgba(18, 18, 18, 0.85);
+  color: #ccc;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.footer p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.footer .gradient-text {
+  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

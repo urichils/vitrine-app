@@ -1,0 +1,94 @@
+.hero {
+  text-align: center;
+  margin-top: 5rem;
+  padding: 0 1rem; 
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+
+.hero.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #222;
+  letter-spacing: 0.5px;
+  max-width: 90vw;
+  margin: 0 auto;
+  word-wrap: break-word;
+  line-height: 1.3;
+}
+
+.hero p {
+  color: #555;
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.5;
+  max-width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.get-started {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid rgb(0, 219, 166);
+  background: transparent;
+  color: rgb(0, 219, 166);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.get-started .arrow {
+  transition: transform 0.3s ease;
+}
+
+.get-started:hover {
+  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
+  color: #fff;
+}
+
+.get-started:hover .arrow {
+  transform: translateX(5px);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 4px; 
+  display: inline-block;
+  line-height: 1.2; 
+  margin-left: 0.3ch;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+.hero p {
+  color: #555;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+.period {
+    color: #222;
+}
