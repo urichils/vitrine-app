@@ -1,3 +1,19 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  padding-top: 90px;
+  flex: 1; /* this pushes footer down */
+}
+
 .footer {
   text-align: center;
   padding: 2rem 1rem;

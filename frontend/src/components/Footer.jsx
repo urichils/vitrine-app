@@ -4,6 +4,9 @@ export default function Footer() {
   return (
     <footer className="footer">
       <p>
+        Alpha release
+      </p>
+      <p>
         Made with <span className="gradient-text">passion</span> and caffeine ☕
       </p>
       <p className="copyright">
