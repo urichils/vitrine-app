@@ -10,6 +10,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 4322;
 const Portfolio = require('./models/Portfolio.js');
 const User = require('./models/User.js');
+const auth = require('./middleware/auth.js');
 
 app.use('/auth', require('./routes/authRoutes.js'));
 app.use('/portfolio', require('./routes/portfolioRoutes.js'));

@@ -121,16 +121,16 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/:portfolioId/section/:sectionIndex/upload', auth, (req, res, next) => {
-  const uploader = upload.array('images', 5);
-
-  uploader(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
+// Wrapper for error handling
+const uploadImages = (req, res, next) => {
+  upload.array('images', 5)(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
     next();
   });
-}, async (req, res) => {
+};
+
+// Route
+router.post('/:portfolioId/section/:sectionIndex/upload', auth, uploadImages, async (req, res) => {
   try {
     const { portfolioId, sectionIndex } = req.params;
     const portfolio = await Portfolio.findOne({ _id: portfolioId, userId: req.user.id });

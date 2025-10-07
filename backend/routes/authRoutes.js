@@ -5,24 +5,28 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 router.post('/register', async (req, res) => {
-    console.log('route hit req.body:', req.body);
-    try {
-        const { email, password } = req.body;
+  try {
+    console.log('Register hit, req.body:', req.body);
+    const { email, password } = req.body;
 
-        const existing = await User.findOne({ email });
-        if (existing) {
-        return res.status(400).json({ error: 'User already exists' });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(password, salt);
-
-        const user = new User({ email, password: hashed });
-        await user.save();
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch {
-        res.status(500).json({ error: 'Server error' });
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ email, password: hashed });
+    await user.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    console.error('Register error:', err);
+    // res.status(500).json({ error: 'Server error' });
+  }
 });
 
 router.post('/login', async (req, res) => {
