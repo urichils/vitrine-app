@@ -61,8 +61,7 @@ body[data-theme='dark'] .hero p {
 }
 
 .navbar ul {
-  display: flex;
-  gap: 2rem;                /* space between buttons */
+  gap: 2rem;
   list-style: none;
 }
 
@@ -124,19 +123,28 @@ body[data-theme='dark'] {
 
 @media (max-width: 700px) {
   .nav-links {
-    display: none;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     right: 1.5rem;
     top: 4rem;
-    flex-direction: column;
     background: var(--bg);
     padding: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    /* start hidden */
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
   }
 
   .nav-links.open {
-    display: flex;
+    max-height: 200px;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .hamburger {

@@ -45,8 +45,8 @@ export default function Features() {
     },
     {
       icon: <Rainbow size={32} />,
-      title: "Markdown/LaTeX support",
-      desc: "Use Markdown or LaTeX formatting for extra flexibility.",
+      title: "Markdown support",
+      desc: "Use Markdown formatting for extra flexibility.",
     },
   ];
 
