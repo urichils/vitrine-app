@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sun, Moon, Menu, X } from "lucide-react";
-import { Link } from "react=router-dom";
+import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
 export default function Navbar() {

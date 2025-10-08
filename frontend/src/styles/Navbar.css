@@ -24,15 +24,15 @@ body[data-theme='light'] .navbar {
   background: #ffffffa3;
   color: #222;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);        /* glassy blur */
+  backdrop-filter: blur(10px); 
   -webkit-backdrop-filter: blur(10px);
 }
 
 body[data-theme='dark'] .navbar {
-  background: rgba(26, 26, 26, 0.75); /* translucent charcoal */
+  background: rgba(26, 26, 26, 0.75);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);        /* glassy blur */
-  -webkit-backdrop-filter: blur(10px); /* for Safari */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
 }
 
 .navbar a,
@@ -66,7 +66,7 @@ body[data-theme='dark'] .hero p {
 }
 
 .navbar a, .navbar button {
-  font-size: 1.1rem;        /* slightly larger text */
+  font-size: 1.1rem;
   font-weight: 400;
   color: #222;
   text-decoration: none;
@@ -75,7 +75,7 @@ body[data-theme='dark'] .hero p {
 }
 
 .navbar a:hover, .navbar button:hover {
-  color: rgb(0, 219, 166);  /* matches your accent */
+  color: rgb(0, 219, 166);
 }
 
 body[data-theme='light'] {

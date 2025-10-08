@@ -49,7 +49,7 @@ export default function Hero() {
     }
 
     return () => clearTimeout(timer);
-  }, [displayed, deleting, index]);
+  }, [displayed, deleting, index, phrases]);
 
   const current = phrases[index];
   const plain = displayed.slice(0, current.normal.length);
