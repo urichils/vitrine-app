@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../styles/Login.css";
 import Footer from "../components/Footer";
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
 
 export default function Login() {
 
@@ -34,6 +36,31 @@ export default function Login() {
             setLoading(false);
         }
     };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            const idToken = await user.getIdToken();
+
+            // send token to your backend
+            const res = await fetch("http://localhost:4322/auth/google", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: idToken }),
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+            localStorage.setItem("token", data.token);
+            console.log("Logged in with Google!");
+            } else {
+            console.error("Backend error:", data);
+            }
+        } catch (err) {
+            console.error("Google sign-in failed:", err);
+        }
+    };
     return (
         <>
         <div className="container-wrapper">
@@ -41,6 +68,9 @@ export default function Login() {
                 <h1>
                     Login to your account
                 </h1>
+                <button type="button" onClick={handleGoogleLogin}>
+                  Sign in with Google
+                </button>
                 <form onSubmit={handleSubmit}>
                     <div className="input-box">
                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
