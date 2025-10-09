@@ -56,7 +56,7 @@ form {
   width: 100%;
 }
 
-button {
+.log-button {
   font-size: 1.1rem;
   margin-top: 15px;
   border: 2px solid rgb(0, 219, 166);

@@ -14,7 +14,6 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <img src="/logo.svg" alt="Logo" className="logo" />
-
       <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
   {menuOpen ? <X size={24} /> : <Menu size={24} />}
   </button>

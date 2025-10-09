@@ -39,7 +39,7 @@ export default function Login() {
         <div className="container-wrapper">
             <div className="container">
                 <h1>
-                    Login
+                    Login to your account
                 </h1>
                 <form onSubmit={handleSubmit}>
                     <div className="input-box">
@@ -49,7 +49,7 @@ export default function Login() {
                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
                     </div>
                     <br />
-                    <button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
+                    <button type="submit"className="log-button" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                 </form>
             </div>
