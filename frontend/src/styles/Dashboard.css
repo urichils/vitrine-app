@@ -1,0 +1,57 @@
+.dashboard {
+  padding: 2rem;
+  margin-top: 5rem;
+  color: var(--text);
+}
+
+.dashboard h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.portfolio-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.portfolio-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+body[data-theme='light'] .portfolio-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.portfolio-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.create-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgb(0,219,166), rgb(20,215,228));
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.create-button:hover {
+  opacity: 0.9;
+}
