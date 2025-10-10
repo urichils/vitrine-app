@@ -5,6 +5,7 @@ require('dotenv').config();
 const path = require('path');
 
 const app = express();
+const router = express.Router();
 app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 4322;
@@ -24,20 +25,23 @@ app.get('/', (req, res) => {
   res.send('server is up idk');
 });
 
-app.listen(PORT, () => {
-  console.log('Server running on port 4322');
-});
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
+})
+.then(() => {
   console.log('Connected to MongoDB');
-}).catch((err) => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+})
+.catch((err) => {
   console.error('Error connecting to MongoDB:', err);
 });
+
 
 app.patch('/upgrade', auth, async (req, res) => {
   try {

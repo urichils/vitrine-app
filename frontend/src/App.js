@@ -4,10 +4,12 @@ import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./context/authContext";
 
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
     <Navbar />
     <Routes>
@@ -17,6 +19,7 @@ function App() {
       <Route path="*" element={<NotFound />} />
     </Routes>
     </Router>
+    </AuthProvider>
   )
 };
 

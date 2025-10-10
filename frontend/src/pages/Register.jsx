@@ -1,7 +1,7 @@
 import Footer from "../components/Footer"
 import { useState } from "react";
 import "../styles/Login.css";
-import { auth, provider } from "../firebase";
+import { auth, provider } from "../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 
 export default function Register() {
@@ -81,13 +81,14 @@ export default function Register() {
         <div className="container-wrapper">
             <div className="container">
                 <h1>Sign up for a new account</h1>
-                <button type="button" onClick={handleGoogleLogin}> 
+                <button type="button" className="log-button" onClick={handleGoogleLogin}> 
                     Sign in with Google
                 </button>
+                <p style={{ textAlign: 'center', margin: '20px 0', fontSize: 'small'}}><i> or </i></p>
                 <form onSubmit={handleSubmit}>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
-                    <input type="password" value={password} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" required />
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" required />
                     <button className="log-button" type="submit" disabled={loading}>
                         {loading ? "Registering..." : "Register"}
                     </button>
