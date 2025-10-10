@@ -7,7 +7,7 @@ export default function Footer() {
         Alpha release
       </p>
       <p>
-        Made with <span className="gradient-text">passion</span> and caffeine ☕
+        Made with <span className="gradient-text">love</span> and ADHD hyperfocus ♡
       </p>
       <p className="copyright">
         © {new Date().getFullYear()} Vitrine. All rights reserved.
