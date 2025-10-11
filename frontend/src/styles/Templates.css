@@ -1,0 +1,99 @@
+.templates-page {
+  margin-top: 6rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text);
+}
+
+.templates-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.template-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.template-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 219, 166, 0.25);
+}
+
+.template-preview {
+  height: 160px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.block {
+  border-radius: 4px;
+  opacity: 0.9;
+}
+
+.block.header {
+  height: 20px;
+  width: 60%;
+}
+
+.block.text {
+  height: 8px;
+  width: 80%;
+}
+
+.block.text.short {
+  width: 50%;
+}
+
+.block.image {
+  flex: 1;
+  border-radius: 6px;
+}
+
+/* distinct fake preview styles for each template */
+.template-preview.minimal {
+  background: #f7f7f7;
+}
+
+.template-preview.minimal .block {
+  background: #dcdcdc;
+}
+
+.template-preview.modern {
+  background: #e0f7f6;
+}
+
+.template-preview.modern .block {
+  background: #00dba6;
+}
+
+.template-preview.classic {
+  background: #f5efe6;
+}
+
+.template-preview.classic .block {
+  background: #bfa27a;
+}
+
+.template-preview.creative {
+  background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+}
+
+.template-preview.creative .block {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+body[data-theme='light'] .template-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}

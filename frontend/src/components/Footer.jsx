@@ -4,10 +4,10 @@ export default function Footer() {
   return (
     <footer className="footer">
       <p>
-        Alpha release
+        <i>alpha release</i>
       </p>
       <p>
-        Made with <span className="gradient-text">love</span> and ADHD hyperfocus ♡
+        made with <span className="gradient-text">love</span> and ADHD hyperfocus ♡
       </p>
       <p className="copyright">
         © {new Date().getFullYear()} Vitrine. All rights reserved.

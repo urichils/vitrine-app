@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/authContext";
 import ProtectedRoute from "./components/protectedRoute";
 import Dashboard from "./pages/Dashboard";
+import Templates from "./pages/Templates";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Dashboard />
         </ProtectedRoute>
       } />
+      <Route path="/templates" element={<Templates />}/>
     </Routes>
     </Router>
     </AuthProvider>

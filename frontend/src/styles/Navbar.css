@@ -103,12 +103,17 @@ body[data-theme='dark'] {
 }
 
 .hamburger {
-  display: none;
+  display: none !important;
   font-size: 1.6rem;
-  background: none;
+  background: none !important;
   border: none;
   color: inherit;
   cursor: pointer;
+}
+
+.hamburger[data-theme='dark'] {
+  color: #ccc;
+  background: none;
 }
 
 :root {
@@ -133,7 +138,7 @@ body[data-theme='dark'] {
     border-radius: 0.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-    /* start hidden */
+
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -148,12 +153,12 @@ body[data-theme='dark'] {
   }
 
   .hamburger {
-    display: block;
+    display: block !important;
   }
 }
 
 .theme-toggle {
-  background: none;
+  background: none !important;
   border: none;
   cursor: pointer;
   color: inherit;
@@ -162,4 +167,30 @@ body[data-theme='dark'] {
 
 .theme-toggle:hover {
   color: rgb(0,219,166);
+  background: none !important;
+}
+
+.navbar a,
+.navbar button,
+#logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none !important;
+  border: none;
+  color: inherit;
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1; /* Fixes vertical misalignment */
+  padding: 0; /* Remove default button padding */
+  transition: color 0.2s ease;
+  box-shadow: none !important;
+}
+
+.navbar a:hover,
+.navbar button:hover,
+#logout:hover {
+  color: rgb(0, 219, 166);
 }

@@ -32,7 +32,7 @@ export default function Navbar() {
           <>
             <li><Link to="/create">Create New</Link></li>
             <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><button onClick={handleLogout}>Logout</button></li>
+            <li><button id="logout" onClick={handleLogout}>Logout</button></li>
           </>
         ) : (
           <>
