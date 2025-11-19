@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -76,7 +76,7 @@ function BlockEditor({ block, onChange, onRemove }) {
     }
 }
 
-export default function EditPortfolio() {
+function EditPortfolio() {
     const { user } = useAuth();
     const { portfolioId } = useParams();
     const navigate = useNavigate();
@@ -177,7 +177,7 @@ export default function EditPortfolio() {
         setSideSelection(b.id);
     };
 
-    constremoveBlock = (id) => {
+    const removeBlock = (id) => {
         setSections(prev => prev.filter(s => s.id!== id));
         if (sideSelection === id) setSideSelection(null);
     };
@@ -299,3 +299,5 @@ export default function EditPortfolio() {
         </>
     );
 }
+
+export default EditPortfolio;

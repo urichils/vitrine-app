@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/authContext";
 import ProtectedRoute from "./components/protectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Templates from "./pages/Templates";
+import EditPortfolio from "./pages/EditPortfolio";
 
 function App() {
   return (
