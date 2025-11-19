@@ -1,0 +1,79 @@
+/* outer layout */
+.editor-wrap {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  padding: 2rem;
+  margin-top: 6rem;
+}
+
+/* left column */
+.editor-left {
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+/* topbar */
+.editor-topbar {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.topbar-actions { display:flex; gap: .6rem; align-items:center; }
+.topbar-actions .save-feedback { font-size:.9rem; color: #20c997; margin-left: .6rem; }
+
+/* main list */
+.sections-list .draggable-item {
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,0.02);
+}
+
+.block-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: .6rem; }
+.block-controls button { margin-left: .5rem; }
+
+/* block body */
+.block { padding: .5rem 0; }
+.block label { display:block; font-size: .9rem; margin-bottom: .25rem; font-weight:600; }
+.block input, .block textarea { width:100%; padding:.6rem; border-radius:8px; border:1px solid rgba(0,0,0,0.08); margin-bottom:.6rem; }
+.block textarea { min-height: 80px; }
+
+/* add block row */
+.add-block-row { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
+.add-block-row .outline { background:transparent; border:1px dashed rgba(255,255,255,0.06); padding:.6rem 1rem; border-radius:8px; cursor:pointer; }
+
+/* small buttons */
+.small { padding:.3rem .6rem; border-radius:6px; background:transparent; border:1px solid rgba(0,0,0,0.06); cursor:pointer; }
+.small.danger { color:#fff; background: #ff6b6b; border:none; }
+
+/* side panel */
+.editor-side {
+  position: sticky;
+  top: 80px;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  height: calc(100vh - 120px);
+  overflow:auto;
+}
+.side-section h4 { margin-top:0; margin-bottom:.6rem; }
+.side-section .tpl { display:block; width:100%; text-align:left; padding:.5rem .6rem; margin-bottom:.5rem; border-radius:6px; cursor:pointer; background: rgba(255,255,255,0.02); }
+
+/* primary button */
+button.primary { background: linear-gradient(90deg, rgb(0,219,166), rgb(20,215,228)); color:white; border:none; padding:.6rem .9rem; border-radius:8px; cursor:pointer; }
+
+/* muted text */
+.muted { color: #888; font-size:.95rem; }
+
+/* responsive */
+@media (max-width: 1000px) {
+  .editor-wrap { grid-template-columns: 1fr; }
+  .editor-side { position: relative; height: auto; margin-top: 1rem; }
+}
