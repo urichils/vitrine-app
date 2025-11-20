@@ -93,11 +93,16 @@ export default function Dashboard() {
             <>
               <div className="portfolio-list">
                 {portfolios.map((p) => (
-                  <div key={p._id} className="portfolio-card">
+                  <div
+                    key={p._id}
+                    className="portfolio-card"
+                    onClick={() => navigate(`/edit/${p._id}`)}
+                  >
                     <h3>{p.name}</h3>
                     <p><b>Slug:</b> {p.slug}</p>
                     <p><b>Theme:</b> {p.theme}</p>
                   </div>
+
                 ))}
               </div>
 

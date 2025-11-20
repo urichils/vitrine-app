@@ -29,8 +29,7 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
-        login(data.token); // optional: update auth context
+        login(data.token, email);
         navigate("/dashboard");
       } else {
         setError(data.error || "Login failed. Please try again.");
