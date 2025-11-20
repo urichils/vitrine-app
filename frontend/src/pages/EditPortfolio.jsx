@@ -2,11 +2,18 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/authContext";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableItem from "../components/SortableItem.jsx"; // the component I wrote before
 import "../styles/EditPortfolio.css";
 
 // some helpers
-const genId = (prefix = "s") => prefix + "_" + Math.random().toString(36).slice(2, 9);
+const genId = (prefix = "s") =>
+  prefix + "_" + Math.random().toString(36).slice(2, 9);
 
 const debounce = (fn, wait = 800) => {
   let t;
@@ -16,7 +23,7 @@ const debounce = (fn, wait = 800) => {
   };
 };
 
-//templates
+// templates
 const templates = {
   minimal: [
     {
@@ -54,7 +61,7 @@ const templates = {
   ],
 };
 
-// block
+// BlockEditor remains unchanged
 function BlockEditor({ block, onChange, onRemove }) {
   const update = (patch) =>
     onChange({ ...block, content: { ...block.content, ...patch } });
@@ -68,13 +75,11 @@ function BlockEditor({ block, onChange, onRemove }) {
             value={block.content.title || ""}
             onChange={(e) => update({ title: e.target.value })}
           />
-
           <label>Subtitle</label>
           <input
             value={block.content.subtitle || ""}
             onChange={(e) => update({ subtitle: e.target.value })}
           />
-
           <button className="small danger" onClick={() => onRemove(block.id)}>
             Remove
           </button>
@@ -89,13 +94,11 @@ function BlockEditor({ block, onChange, onRemove }) {
             value={block.content.heading || ""}
             onChange={(e) => update({ heading: e.target.value })}
           />
-
           <label>Body</label>
           <textarea
             value={block.content.body || ""}
             onChange={(e) => update({ body: e.target.value })}
           />
-
           <button className="small danger" onClick={() => onRemove(block.id)}>
             Remove
           </button>
@@ -111,7 +114,6 @@ function BlockEditor({ block, onChange, onRemove }) {
             onChange={(e) => update({ heading: e.target.value })}
           />
           <p className="muted">Project list editable later.</p>
-
           <button className="small danger" onClick={() => onRemove(block.id)}>
             Remove
           </button>
@@ -130,7 +132,6 @@ function BlockEditor({ block, onChange, onRemove }) {
               })
             }
           />
-
           <button className="small danger" onClick={() => onRemove(block.id)}>
             Remove
           </button>
@@ -149,7 +150,7 @@ function BlockEditor({ block, onChange, onRemove }) {
   }
 }
 
-// a component after going through hell
+// SidePanel remains mostly unchanged
 function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving }) {
   return (
     <aside className="editor-side">
@@ -161,19 +162,14 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
         <button className="tpl" onClick={() => onSave("creative", true)}>
           Creative
         </button>
-
         <hr />
-
         <h4>Selected Block</h4>
-
         {!block && <p className="muted">Select a block to edit</p>}
-
         {block && (
           <>
             <p>
               <b>Type:</b> {block.type}
             </p>
-
             <label>Background (CSS)</label>
             <input
               value={block.settings?.bg || ""}
@@ -185,7 +181,6 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
               }
               placeholder="e.g. linear-gradient(...)"
             />
-
             <label>Padding</label>
             <input
               value={block.settings?.padding || ""}
@@ -199,11 +194,8 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
             />
           </>
         )}
-
         <hr />
-
         <h4>Portfolio Info</h4>
-
         <p><b>Name</b></p>
         <input
           value={portfolio?.name || ""}
@@ -211,7 +203,6 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
             setPortfolio((p) => ({ ...p, name: e.target.value }))
           }
         />
-
         <p><b>Slug</b></p>
         <input
           value={portfolio?.slug || ""}
@@ -219,7 +210,6 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
             setPortfolio((p) => ({ ...p, slug: e.target.value }))
           }
         />
-
         <div style={{ marginTop: 12 }}>
           <button className="primary" onClick={onSave}>
             {saving ? "Saving..." : "Save Portfolio"}
@@ -230,7 +220,7 @@ function SidePanel({ block, updateBlock, portfolio, setPortfolio, onSave, saving
   );
 }
 
-// main thingy 
+// MAIN COMPONENT
 export default function EditPortfolio() {
   const { user } = useAuth();
   const { portfolioId } = useParams();
@@ -243,21 +233,18 @@ export default function EditPortfolio() {
   const [sideSelection, setSideSelection] = useState(null);
   const [feedback, setFeedback] = useState("");
 
-  /* Load portfolio */
+  // Load portfolio
   useEffect(() => {
     if (!user) return;
-
     let mounted = true;
-
     (async () => {
       try {
-        const res = await fetch(`http://localhost:4322/portfolio/${portfolioId}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-
+        const res = await fetch(
+          `http://localhost:4322/portfolio/${portfolioId}`,
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        );
         const data = await res.json();
         if (!mounted) return;
-
         setPortfolio(data);
         setSections(data.sections || []);
       } catch (err) {
@@ -266,24 +253,25 @@ export default function EditPortfolio() {
         setLoading(false);
       }
     })();
-
     return () => (mounted = false);
   }, [user, portfolioId]);
 
-  //save handle
+  // Save logic
   const saveNow = useCallback(
     async (payload) => {
       setSaving(true);
       try {
-        const res = await fetch(`http://localhost:4322/portfolio/${portfolioId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify(payload),
-        });
-
+        const res = await fetch(
+          `http://localhost:4322/portfolio/${portfolioId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
         if (!res.ok) {
           const err = await res.json();
           setFeedback(err.error);
@@ -299,33 +287,27 @@ export default function EditPortfolio() {
   );
 
   const debouncedSave = useCallback(debounce(saveNow, 1000), [saveNow]);
-
   useEffect(() => {
     if (!portfolio) return;
     debouncedSave({ ...portfolio, sections });
   }, [sections]);
 
-  // drag and drop
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const items = Array.from(sections);
-    const [moved] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, moved);
-    setSections(items);
+  // Drag and drop handler
+  const onDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over) return;
+    const oldIndex = sections.findIndex((s) => s.id === active.id);
+    const newIndex = sections.findIndex((s) => s.id === over.id);
+    if (oldIndex !== newIndex) setSections(arrayMove(sections, oldIndex, newIndex));
   };
 
+  // Block operations
   const addBlock = (type) => {
-    const b = {
-      id: genId(),
-      type,
-      content: {},
-      settings: {},
-    };
-
+    const b = { id: genId(), type, content: {}, settings: {} };
     if (type === "hero") b.content = { title: "Hello", subtitle: "Description" };
     if (type === "text") b.content = { heading: "Heading", body: "Body text" };
     if (type === "projects") b.content = { heading: "Projects", items: [] };
-
+    if (type === "gallery") b.content = { images: [] };
     setSections((prev) => [...prev, b]);
     setSideSelection(b.id);
   };
@@ -339,10 +321,7 @@ export default function EditPortfolio() {
   };
 
   const insertTemplate = (templateKey) => {
-    const blocks = templates[templateKey].map((b) => ({
-      ...b,
-      id: genId(),
-    }));
+    const blocks = templates[templateKey].map((b) => ({ ...b, id: genId() }));
     setSections((prev) => [...prev, ...blocks]);
   };
 
@@ -361,54 +340,54 @@ export default function EditPortfolio() {
               >
                 Preview
               </button>
-              <button className="primary" onClick={() => saveNow({ ...portfolio, sections })}>
+              <button
+                className="primary"
+                onClick={() => saveNow({ ...portfolio, sections })}
+              >
                 {saving ? "Saving..." : "Save now"}
               </button>
               <span className="save-feedback">{feedback}</span>
             </div>
           </div>
 
-          {/*main stuff*/}
+          {/* MAIN DRAG-AND-DROP */}
           <div className="editor-main">
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="sections">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="sections-list">
-                    {sections.map((block, index) => (
-                      <Draggable key={block.id} draggableId={block.id} index={index}>
-                        {(dr) => (
-                          <div
-                            ref={dr.innerRef}
-                            {...dr.draggableProps}
-                            {...dr.dragHandleProps}
-                            className="draggable-item"
+            <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+              <SortableContext
+                items={sections.map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {sections.map((block) => (
+                  <SortableItem key={block.id} id={block.id}>
+                    <div className="draggable-item">
+                      <div className="block-header">
+                        <strong>{block.type.toUpperCase()}</strong>
+                        <div className="block-controls">
+                          <button
+                            className="small"
+                            onClick={() => setSideSelection(block.id)}
                           >
-                            <div className="block-header">
-                              <strong>{block.type.toUpperCase()}</strong>
-                              <div className="block-controls">
-                                <button className="small" onClick={() => setSideSelection(block.id)}>
-                                  Edit
-                                </button>
-                                <button className="small danger" onClick={() => removeBlock(block.id)}>
-                                  Remove
-                                </button>
-                              </div>
-                            </div>
+                            Edit
+                          </button>
+                          <button
+                            className="small danger"
+                            onClick={() => removeBlock(block.id)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
 
-                            <BlockEditor
-                              block={block}
-                              onChange={updateBlock}
-                              onRemove={removeBlock}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                      <BlockEditor
+                        block={block}
+                        onChange={updateBlock}
+                        onRemove={removeBlock}
+                      />
+                    </div>
+                  </SortableItem>
+                ))}
+              </SortableContext>
+            </DndContext>
 
             <div className="add-block-row">
               <button onClick={() => addBlock("hero")} className="outline">
