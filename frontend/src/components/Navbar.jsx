@@ -3,12 +3,17 @@ import { Sun, Moon, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import "../styles/Navbar.css";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [dark, setDark] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const path = location && typeof location.pathname === "string"
+    ? location.pathname
+    : (typeof window !== "undefined" ? window.location.pathname : "/");
 
   useEffect(() => {
     document.body.setAttribute("data-theme", dark ? "dark" : "light");
@@ -18,6 +23,8 @@ export default function Navbar() {
     logout();
     navigate("/");
   };
+
+  if (path.startsWith("/edit")) return null;
 
   return (
     <nav className="navbar">

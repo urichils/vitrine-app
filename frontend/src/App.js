@@ -16,11 +16,11 @@ function App() {
     <Router>
     <Navbar />
     <Routes>
+      <Route path = "/edit/:portfolioId" element={<EditPortfolio />} />
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="*" element={<NotFound />} />
-      <Route path = "/edit/:portfolioId" element={<EditPortfolio />} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />

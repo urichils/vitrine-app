@@ -24,15 +24,15 @@ body[data-theme='light'] .navbar {
   background: #ffffffa3;
   color: #222;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none; 
+  -webkit-backdrop-filter: none;
 }
 
 body[data-theme='dark'] .navbar {
   background: rgba(26, 26, 26, 0.75);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px); 
+  backdrop-filter:none; 
+  -webkit-backdrop-filter: none; 
 }
 
 .navbar a,
@@ -142,14 +142,14 @@ body[data-theme='dark'] {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transform: translateY(-10px);
+    /* transform: translateY(-10px); */
     transition: all 0.3s ease;
   }
 
   .nav-links.open {
     max-height: 200px;
     opacity: 1;
-    transform: translateY(0);
+    /* transform: translateY(0); */
   }
 
   .hamburger {
@@ -193,4 +193,8 @@ body[data-theme='dark'] {
 .navbar button:hover,
 #logout:hover {
   color: rgb(0, 219, 166);
+}
+
+.hide-navbar .navbar {
+  display: none !important;
 }
