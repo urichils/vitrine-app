@@ -5,17 +5,13 @@ import {
   List as ListIcon,
   Sparkles,
   Image as ImageIcon,
-  Images,
   Video,
   SquareChevronRight,
   SquareSplitVertical,
   Cuboid,
   ChartColumn,
-  UserRoundPen,
   Code,
   Gamepad2,
-  MessageSquareWarning,
-  Projector,
   Space,
   Github,
 } from "lucide-react";
@@ -24,7 +20,6 @@ import ImageBlock from "./blocks/ImageBlock";
 import ReposBlock from "./blocks/ReposBlock";
 import ContainerBlock from "./blocks/ContainerBlock";
 import DividerBlock from "./blocks/DividerBlock";
-import SlideshowBlock from "./blocks/SlideshowBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
 import IconBlock from "./blocks/IconBlock";
 import CodeBlock from "./blocks/CodeBlock";
