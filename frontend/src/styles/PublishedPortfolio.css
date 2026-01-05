@@ -132,10 +132,9 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .published-element {
-    /* Elements remain at their fixed positions */
-    /* Consider adding mobile-specific adjustments if needed */
-  }
+  /* .published-element {
+
+  } */
 
   .error-content {
     padding: 30px 20px;
@@ -160,4 +159,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.published-canvas {
+  position: relative;  /* Important for absolute positioning */
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.published-content {
+  position: relative;  /* Important for absolute positioning context */
+  width: 100%;
 }

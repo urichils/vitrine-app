@@ -16,12 +16,14 @@ export default function PublishedPortfolio() {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
+        console.log("Fetching portfolio with ID:", portfolioId);
+        
         // Fetch public portfolio data (no auth required for published portfolios)
         const res = await fetch(
           `http://localhost:4322/portfolio/public/${portfolioId}`
         );
         
-        if (!res.ok) {
+        if (!res. ok) {
           if (res.status === 404) {
             throw new Error("Portfolio not found or not published");
           }
@@ -29,14 +31,17 @@ export default function PublishedPortfolio() {
         }
 
         const text = await res.text();
-        if (!text) throw new Error("Empty response");
+        if (! text) throw new Error("Empty response");
 
         const data = JSON.parse(text);
+        
+        console.log("Portfolio data received:", data);
+        console.log("Elements:", data?. elements);
         
         setPortfolioData(data);
         setElements(data?.elements || []);
         
-        if (data.canvas?.height) setCanvasHeight(data.canvas.height);
+        if (data. canvas?. height) setCanvasHeight(data.canvas. height);
         if (data.canvas?.background) setCanvasBackground(data.canvas.background);
         
         // Set page title if portfolio has a name
@@ -84,17 +89,28 @@ export default function PublishedPortfolio() {
         style={{
           minHeight: canvasHeight,
           backgroundColor: canvasBackground,
+          position: 'relative',  // IMPORTANT: Add relative positioning
         }}
       >
-        <div className="published-content">
+        <div className="published-content" style={{
+          position: 'relative',  // IMPORTANT:  Ensure elements can be absolutely positioned
+          width: '100%',
+          height: '100%',
+          minHeight: canvasHeight
+        }}>
           {elements.length === 0 ? (
             <div className="empty-portfolio">
               <p>This portfolio is empty</p>
             </div>
           ) : (
-            elements.map((el) => {
+            elements. map((el) => {
               const cfg = BLOCKS[el.type];
-              const Block = cfg?.Render;
+              const Block = cfg?. Render;
+
+              // Debug logging
+              if (! Block) {
+                console.warn(`No Render component found for block type: ${el.type}`);
+              }
 
               return (
                 <div
@@ -102,10 +118,11 @@ export default function PublishedPortfolio() {
                   className="published-element"
                   style={{
                     position: 'absolute',
-                    left: el.x,
-                    top: el.y,
-                    width: el.width,
-                    height: el.height,
+                    left: el.x || 0,
+                    top:  el.y || 0,
+                    width: el.width || 200,
+                    height: el. height || 100,
+                    overflow: 'hidden',
                   }}
                 >
                   {Block ? (
@@ -116,7 +133,9 @@ export default function PublishedPortfolio() {
                       readOnly={true}
                     />
                   ) : (
-                    <div className="unknown-block">Unknown block type</div>
+                    <div className="unknown-block">
+                      Unknown block type: {el.type}
+                    </div>
                   )}
                 </div>
               );
