@@ -1,11 +1,9 @@
 // src/BlockRegistry.js
 import React from "react";
 import {
-  Heading1,
-  Heading2,
-  Pilcrow,
+  Type,
   List as ListIcon,
-  Quote,
+  Sparkles,
   Image as ImageIcon,
   Images,
   Video,
@@ -21,9 +19,17 @@ import {
   Space,
   Github,
 } from "lucide-react";
-import SlideshowBlock from "./blocks/SlideshowBlock.jsx";
+import TextBlock from "./blocks/TextBlock";
+import ImageBlock from "./blocks/ImageBlock";
+import ReposBlock from "./blocks/ReposBlock";
+import ContainerBlock from "./blocks/ContainerBlock";
+import DividerBlock from "./blocks/DividerBlock";
+import SlideshowBlock from "./blocks/SlideshowBlock";
+import ButtonBlock from "./blocks/ButtonBlock";
+import IconBlock from "./blocks/IconBlock";
+import CodeBlock from "./blocks/CodeBlock";
 
-// Simple contentEditable block
+// Simple contentEditable block for specialized use cases
 export const EditableBlock = ({ element, update, className, placeholder }) => {
   return (
     <div
@@ -38,40 +44,14 @@ export const EditableBlock = ({ element, update, className, placeholder }) => {
 };
 
 export const BLOCKS = {
-  title: {
-    type: "title",
-    label: "Title",
-    icon: <Heading1 size={18} />,
+  text: {
+    type: "text",
+    label: "Text",
+    icon: <Type size={18} />,
     defaultWidth: 600,
-    defaultHeight: 110,
+    defaultHeight: 150,
     defaultContent: "",
-    Render: (props) => (
-      <EditableBlock {...props} className="text-4xl font-bold" placeholder="Your Title" />
-    ),
-  },
-
-  subheading: {
-    type: "subheading",
-    label: "Subheading",
-    icon: <Heading2 size={18} />,
-    defaultWidth: 600,
-    defaultHeight: 90,
-    defaultContent: "",
-    Render: (props) => (
-      <EditableBlock {...props} className="text-2xl font-semibold" placeholder="Your Subtitle" />
-    ),
-  },
-
-  paragraph: {
-    type: "paragraph",
-    label: "Paragraph",
-    icon: <Pilcrow size={18} />,
-    defaultWidth: 600,
-    defaultHeight: 180,
-    defaultContent: "",
-    Render: (props) => (
-      <EditableBlock {...props} className="text-base leading-6" placeholder="Type your text here..." />
-    ),
+    Render: (props) => <TextBlock {...props} />,
   },
 
   list: {
@@ -86,16 +66,21 @@ export const BLOCKS = {
     ),
   },
 
-  quote: {
-    type: "quote",
-    label: "Quote",
-    icon: <Quote size={18} />,
-    defaultWidth: 550,
-    defaultHeight: 160,
+  icon: {
+    type: "icon",
+    label: "Icon",
+    icon: <Sparkles size={18} />,
+    defaultWidth: 120,
+    defaultHeight: 120,
     defaultContent: "",
-    Render: (props) => (
-      <EditableBlock {...props} className="italic border-l-4 pl-4" placeholder="Quote..." />
-    ),
+    defaultStyle: {
+      iconSize: 48,
+      iconColor: "#3b82f6",
+      bgColor: "transparent",
+      padding: 16,
+      borderRadius: 8,
+    },
+    Render: (props) => <IconBlock {...props} />,
   },
 
   image: {
@@ -105,47 +90,36 @@ export const BLOCKS = {
     defaultWidth: 400,
     defaultHeight: 260,
     defaultContent: "",
-    Render: ({ element, update, openModal }) => (
-      <div
-        className="border bg-gray-100 flex items-center justify-center cursor-pointer"
-        onClick={() => openModal(element.id, "Image URL", element.content)}
-      >
-        {element.content ? (
-          <img src={element.content} alt="" className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-gray-500">Click to add image</span>
-        )}
-      </div>
-    ),
+    Render: (props) => <ImageBlock {...props} />,
   },
 
-  gallery: {
-    type: "gallery",
-    label: "Gallery",
-    icon: <Images size={18} />,
-    defaultWidth: 700,
-    defaultHeight: 300,
-    defaultContent: "",
-    Render: ({ element, update, openModal }) => {
-      const images = element.content ? JSON.parse(element.content) : [];
-      return (
-        <div className="grid grid-cols-3 gap-2">
-          {images.length ? (
-            images.map((src, i) => (
-              <img key={i} src={src} className="h-24 object-cover rounded" />
-            ))
-          ) : (
-            <div
-              className="text-gray-500 p-4 border w-full cursor-pointer"
-              onClick={() => openModal(element.id, "Gallery Image URL")}
-            >
-              Empty Gallery – click to add images
-            </div>
-          )}
-        </div>
-      );
-    },
-  },
+  // gallery: {
+  //   type: "gallery",
+  //   label: "Gallery",
+  //   icon: <Images size={18} />,
+  //   defaultWidth: 700,
+  //   defaultHeight: 300,
+  //   defaultContent: "",
+  //   Render: ({ element, update, openModal }) => {
+  //     const images = element.content ? JSON.parse(element.content) : [];
+  //     return (
+  //       <div className="grid grid-cols-3 gap-2">
+  //         {images.length ? (
+  //           images.map((src, i) => (
+  //             <img key={i} src={src} alt={`Gallery ${i + 1}`} className="h-24 object-cover rounded" />
+  //           ))
+  //         ) : (
+  //           <div
+  //             className="text-gray-500 p-4 border w-full cursor-pointer"
+  //             onClick={() => openModal && openModal(element.id, "Gallery Image URL")}
+  //           >
+  //             Empty Gallery – click to add images
+  //           </div>
+  //         )}
+  //       </div>
+  //     );
+  //   },
+  // },
 
   video: {
     type: "video",
@@ -157,7 +131,7 @@ export const BLOCKS = {
     Render: ({ element, update, openModal }) => (
       <div
         className="border bg-black text-white flex items-center justify-center cursor-pointer"
-        onClick={() => openModal(element.id, "Video URL", element.content)}
+        onClick={() => openModal && openModal(element.id, "Video URL", element.content)}
       >
         {element.content ? (
           <iframe
@@ -165,6 +139,7 @@ export const BLOCKS = {
             height="100%"
             src={element.content.replace("watch?v=", "embed/")}
             allowFullScreen
+            title="Embedded video"
             style={{ borderRadius: "8px" }}
           />
         ) : (
@@ -179,9 +154,9 @@ export const BLOCKS = {
     label: "Divider",
     icon: <SquareSplitVertical size={18} />,
     defaultWidth: 600,
-    defaultHeight: 20,
+    defaultHeight: 60,
     defaultContent: "",
-    Render: () => <div className="border-t w-full my-4" />,
+    Render: (props) => <DividerBlock {...props} />,
   },
 
   spacer: {
@@ -200,8 +175,8 @@ export const BLOCKS = {
     icon: <Cuboid size={18} />,
     defaultWidth: 700,
     defaultHeight: 400,
-    defaultContent: "Container",
-    Render: ({ element }) => <div className="border rounded-lg p-4 opacity-60">{element.content}</div>,
+    defaultContent: "",
+    Render: (props) => <ContainerBlock {...props} />,
   },
 
   columns: {
@@ -229,30 +204,38 @@ export const BLOCKS = {
     type: "button",
     label: "Button",
     icon: <Gamepad2 size={18} />,
-    defaultWidth: 150,
-    defaultHeight: 50,
+    defaultWidth: 200,
+    defaultHeight: 60,
     defaultContent: "Click me",
-    Render: ({ element, update, openModal }) => (
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded"
-        onClick={() => openModal(element.id, "Button Text", element.content)}
-      >
-        {element.content}
-      </button>
-    ),
+    defaultStyle: {
+      bgColor: "#3b82f6",
+      textColor: "#ffffff",
+      borderRadius: 8,
+      paddingX: 16,
+      paddingY: 10,
+      fontSize: 14,
+      fontWeight: 500,
+    },
+    Render: (props) => <ButtonBlock {...props} />,
   },
 
-  cta: {
-    type: "cta",
-    label: "Call to Action",
-    icon: <MessageSquareWarning size={18} />,
-    defaultWidth: 500,
-    defaultHeight: 150,
-    defaultContent: "Your call to action",
-    Render: ({ element }) => (
-      <div className="p-4 border rounded bg-yellow-100 cursor-pointer">{element.content}</div>
-    ),
-  },
+  // cta: {
+  //   type: "cta",
+  //   label: "Call to Action",
+  //   icon: <MessageSquareWarning size={18} />,
+  //   defaultWidth: 500,
+  //   defaultHeight: 150,
+  //   defaultContent: "Your call to action",
+  //   Render: ({ element, update }) => (
+  //     <div 
+  //       className="p-4 border rounded bg-yellow-100 cursor-pointer"
+  //       contentEditable
+  //       suppressContentEditableWarning
+  //       onInput={(e) => update && update({ content: e.currentTarget.innerHTML })}
+  //       dangerouslySetInnerHTML={{ __html: element.content || "Your call to action" }}
+  //     />
+  //   ),
+  // },
 
   embed: {
     type: "embed",
@@ -263,10 +246,15 @@ export const BLOCKS = {
     defaultContent: "",
     Render: ({ element, update, openModal }) => (
       <div
-        className="border bg-gray-100 p-4 cursor-pointer"
-        onClick={() => openModal(element.id, "Embed Code", element.content)}
-        dangerouslySetInnerHTML={{ __html: element.content }}
-      />
+        className="border bg-gray-100 p-4 cursor-pointer min-h-[100px] flex items-center justify-center"
+        onClick={() => openModal && openModal(element.id, "Embed Code", element.content)}
+      >
+        {element.content ? (
+          <div dangerouslySetInnerHTML={{ __html: element.content }} />
+        ) : (
+          <span className="text-gray-500">Click to add embed code</span>
+        )}
+      </div>
     ),
   },
 
@@ -275,53 +263,33 @@ export const BLOCKS = {
     label: "Code Block",
     icon: <Code size={18} />,
     defaultWidth: 600,
-    defaultHeight: 200,
-    defaultContent: "console.log('hello');",
-    Render: ({ element, update }) => (
-      <textarea
-        className="w-full h-full font-mono text-sm p-2 border rounded"
-        value={element.content}
-        onChange={(e) => update({ content: e.target.value })}
-      />
-    ),
-  },
-
-  slideshow: {
-    type: "slideshow",
-    label: "Slideshow",
-    icon: <Projector size={18} />,
-    defaultWidth: 700,
     defaultHeight: 300,
-    defaultContent: "",
-    Render: ({ element, update, openModal }) => (
-      <SlideshowBlock element={element} update={update} openModal={openModal} />
-    ),
+    defaultContent: "console.log('hello');",
+    defaultStyle: {
+      theme: 'dark',
+      language: 'javascript',
+      showLineNumbers: true,
+    },
+    Render: (props) => <CodeBlock {...props} />,
   },
 
-  profile: {
-    type: "profile",
-    label: "Profile",
-    icon: <UserRoundPen size={18} />,
-    defaultWidth: 400,
-    defaultHeight: 200,
-    defaultContent: "Your Name",
-    Render: ({ element }) => <div className="p-4 border rounded">{element.content}</div>,
-  },
+  // slideshow: {
+  //   type: "slideshow",
+  //   label: "Slideshow",
+  //   icon: <Projector size={18} />,
+  //   defaultWidth: 700,
+  //   defaultHeight: 300,
+  //   defaultContent: "",
+  //   Render: (props) => <SlideshowBlock {...props} />,
+  // },
 
-  github: {
-    type: "github",
+  repos: {
+    type: "repos",
     label: "GitHub Repos",
     icon: <Github size={18} />,
     defaultWidth: 600,
-    defaultHeight: 260,
+    defaultHeight: 400,
     defaultContent: "",
-    Render: ({ element, update, openModal }) => (
-      <div
-        className="border p-4 text-gray-500 cursor-pointer"
-        onClick={() => openModal(element.id, "GitHub Username", element.content)}
-      >
-        {element.content || "Click to set GitHub username"}
-      </div>
-    ),
+    Render: (props) => <ReposBlock {...props} />,
   },
 };

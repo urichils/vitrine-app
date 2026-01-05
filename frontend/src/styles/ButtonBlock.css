@@ -1,0 +1,70 @@
+.button-block {
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+  font-family: inherit;
+  background-color: rgb(0, 219, 166);
+}
+
+.button-block:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.4);
+  outline-offset: 2px;
+}
+
+.button-block:hover {
+  filter: brightness(0.95);
+}
+
+.button-block-root {
+  display: inline-block;
+  position: relative;
+}
+
+.button-settings-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: rgb(0, 219, 166);
+  color: white;
+  border: none;
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-settings-btn:hover {
+  background-color: #2563eb;
+}
+
+.button-block-root:hover .button-settings-btn {
+  opacity: 1;
+}
+
+.button-settings-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.button-settings-panel .space-y-4 > * + * {
+  margin-top: 1rem;
+}

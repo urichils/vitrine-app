@@ -1,12 +1,13 @@
 // src/pages/EditPortfolio.jsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
-import { Move, Trash2 } from "lucide-react";
+import { Move, Trash2, Eye, Upload, X, Check } from "lucide-react";
 import { BLOCKS } from "../BlockRegistry";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import Footer from "../components/Footer";
 import "../styles/EditPortfolio.css";
+import AuthDebugHelper from "../components/AuthDebugHelper";
 
 const genId = () =>
   crypto?.randomUUID
@@ -46,6 +47,155 @@ function Modal({ open, title, value, onClose, onSubmit }) {
   );
 }
 
+function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose }) {
+  if (!open) return null;
+
+  return (
+    <div 
+      className="img-url-modal-backdrop" 
+      style={{ zIndex: 1000 }}
+      onClick={onClose}
+    >
+      <div 
+        className="preview-modal" 
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '90vw',
+          maxWidth: '1200px',
+          height: '90vh',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }}
+      >
+        {/* Preview Header */}
+        <div style={{
+          padding: '16px 24px',
+          borderBottom: '2px solid #e5e7eb',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: '#f9fafb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Eye size={20} style={{ color: '#6b7280' }} />
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>Preview Mode</h3>
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              padding: '8px',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#e5e7eb'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Preview Content */}
+        <div style={{
+          flex: 1,
+          overflow: 'auto',
+          backgroundColor: canvasBackground
+        }}>
+          <div style={{
+            position: 'relative',
+            minHeight: canvasHeight,
+            width: '100%'
+          }}>
+            {elements.map((el) => {
+              const cfg = BLOCKS[el.type];
+              const Block = cfg?.Render;
+
+              return (
+                <div
+                  key={el.id}
+                  style={{
+                    position: 'absolute',
+                    left: el.x,
+                    top: el.y,
+                    width: el.width,
+                    height: el.height,
+                    pointerEvents: 'auto'
+                  }}
+                >
+                  {Block ? (
+                    <Block 
+                      element={el} 
+                      update={() => {}} 
+                      openModal={() => {}}
+                      readOnly={true}
+                    />
+                  ) : (
+                    <div>Unknown block</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PublishModal({ open, onClose, onPublish, publishing }) {
+  if (!open) return null;
+
+  return (
+    <div className="img-url-modal-backdrop">
+      <div className="img-url-modal" style={{ maxWidth: '500px' }}>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Upload size={24} />
+          Publish Portfolio
+        </h3>
+        <p style={{ margin: '16px 0', color: '#6b7280', fontSize: '14px' }}>
+          Publishing will make your portfolio live and accessible to anyone with the link. 
+          All changes will be saved automatically.
+        </p>
+        <div className="modal-actions">
+          <button onClick={onClose} disabled={publishing}>
+            Cancel
+          </button>
+          <button
+            className="primary"
+            onClick={onPublish}
+            disabled={publishing}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            {publishing ? (
+              <>
+                <span className="spinner-small" />
+                Publishing...
+              </>
+            ) : (
+              <>
+                <Check size={16} />
+                Publish Now
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function EditPortfolio() {
   const { portfolioId } = useParams();
   const { user } = useAuth();
@@ -53,13 +203,19 @@ export default function EditPortfolio() {
 
   const [elements, setElements] = useState([]);
   const [canvasHeight, setCanvasHeight] = useState(1200);
+  const [canvasBackground, setCanvasBackground] = useState("#ffffff");
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [publishSuccess, setPublishSuccess] = useState(false);
   const [modalState, setModalState] = useState({
     open: false,
     id: null,
     title: "",
     value: "",
   });
+  const [selectedId, setSelectedId] = useState(null);
 
   const mountedRef = useRef(true);
 
@@ -79,12 +235,21 @@ export default function EditPortfolio() {
           `http://localhost:4322/portfolio/${portfolioId}`,
           { headers: { Authorization: `Bearer ${user.token}` } }
         );
-        const data = await res.json();
+        
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        console.log("Fetch response:", res);
+
+        const text = await res.text();
+        if (!text) throw new Error("Empty response");
+
+        const data = JSON.parse(text);
         if (!mountedRef.current) return;
 
         setElements(data?.elements || []);
         if (data.canvas?.height) setCanvasHeight(data.canvas.height);
-      } catch {
+        if (data.canvas?.background) setCanvasBackground(data.canvas.background);
+      } catch (err) {
+        console.error("Failed to load portfolio:", err);
         setElements([]);
       } finally {
         setLoading(false);
@@ -114,8 +279,41 @@ export default function EditPortfolio() {
   const debouncedSave = useRef(debounce((p) => saveNow(p), 900)).current;
 
   useEffect(() => {
-    if (!loading) debouncedSave({ elements, canvas: { height: canvasHeight } });
-  }, [elements, canvasHeight, debouncedSave, loading]);
+    if (!loading) debouncedSave({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
+  }, [elements, canvasHeight, canvasBackground, debouncedSave, loading]);
+
+  const handlePublish = async () => {
+    setPublishing(true);
+    
+    try {
+      // First save current state
+      await saveNow({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
+      
+      // Then publish
+      const res = await fetch(`http://localhost:4322/portfolio/${portfolioId}/publish`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      if (res.ok) {
+        setPublishSuccess(true);
+        setTimeout(() => {
+          setPublishModalOpen(false);
+          setPublishSuccess(false);
+          // Optionally navigate to the published portfolio
+          navigate(`/portfolio/${portfolioId}`);
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("Publish failed:", err);
+      alert("Failed to publish portfolio. Please try again.");
+    } finally {
+      setPublishing(false);
+    }
+  };
 
   const add = (type) => {
     const cfg = BLOCKS[type];
@@ -136,6 +334,8 @@ export default function EditPortfolio() {
     }, 60);
   };
 
+  const selected = elements.find((el) => el.id === selectedId);
+
   const update = (id, patch) =>
     setElements((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
 
@@ -153,16 +353,27 @@ export default function EditPortfolio() {
     update(modalState.id, { content: val });
   };
 
-  if (loading) return <p className="loading">Loading editor…</p>;
+  if (loading) return <p className="loading">Loading editor...</p>;
 
   return (
     <>
       <div className="canvas-shell-full">
         <div className="editor-top-right">
-          <button className="top-btn" onClick={() => navigate(`/portfolio/${portfolioId}`)}>
-            Publish
-          </button>
-          <button className="top-btn">{user?.username || "Account"}</button>
+          <div className="editor-top-right">
+            <button className="top-btn top-btn-secondary" onClick={() => setPreviewOpen(true)}>
+              <Eye size={16} />
+              Preview
+            </button>
+
+            <button className="top-btn" onClick={() => setPublishModalOpen(true)}>
+              <Upload size={16} />
+              Publish
+            </button>
+
+            <button className="top-btn top-btn-ghost">
+              {user?.username || "Account"}
+            </button>
+          </div>
         </div>
 
         <div className="icon-toolbar">
@@ -174,7 +385,14 @@ export default function EditPortfolio() {
         </div>
 
         <main className="canvas-area">
-          <div className="canvas-vw" style={{ minHeight: canvasHeight }}>
+          <div 
+            className="canvas-vw" 
+            style={{ 
+              minHeight: canvasHeight,
+              backgroundColor: canvasBackground,
+              transition: 'background-color 0.3s ease'
+            }}
+          >
             <div className="canvas-vw-inner">
               {elements.length === 0 && (
                 <div className="canvas-empty">Add blocks from the top to start</div>
@@ -204,12 +422,12 @@ export default function EditPortfolio() {
                     className="canvas-item-rnd"
                     dragHandleClassName="drag-handle"
                   >
-                    <div className="canvas-item" id={el.id}>
+                    <div className="canvas-item" onClick={() => setSelectedId(el.id)} id={el.id}>
                       <div className="item-toolbar" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <div className="drag-handle"><Move size={14} /></div>
                         <div style={{ fontSize: 12, color: "#666", marginRight: "auto" }}>{cfg?.label || el.type}</div>
                         <div className="item-actions">
-                          {["image", "embed", "repos", "button"].includes(el.type) && (
+                          {["image", "embed", "repos", "button", "icon"].includes(el.type) && (
                             <button
                               className="tiny"
                               onClick={() =>
@@ -241,28 +459,143 @@ export default function EditPortfolio() {
         </main>
 
         <aside className="prop-panel open">
-          <div style={{ padding: 10 }}>
-            <strong>Canvas</strong>
-            <div style={{ marginTop: 8 }}>
-              <label>Height</label>
+          <div className="prop-panel-inner">
+            <strong>Canvas Settings</strong>
+            
+            <div style={{ marginTop: 12 }}>
+              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Background Color
+              </label>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="color"
+                  value={canvasBackground}
+                  onChange={(e) => setCanvasBackground(e.target.value)}
+                  style={{ 
+                    width: '50px', 
+                    height: '32px', 
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                />
+                <input
+                  type="text"
+                  value={canvasBackground}
+                  onChange={(e) => setCanvasBackground(e.target.value)}
+                  placeholder="#ffffff"
+                  style={{ 
+                    flex: 1,
+                    padding: '6px 8px',
+                    fontSize: '12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px'
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
+                {['#ffffff', '#f3f4f6', '#1f2937', '#3b82f6', '#10b981', '#f59e0b'].map(color => (
+                  <button
+                    key={color}
+                    onClick={() => setCanvasBackground(color)}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      backgroundColor: color,
+                      border: canvasBackground === color ? '2px solid #000' : '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                    title={color}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <label style={{ fontSize: '12px', fontWeight: '500' }}>Canvas Height</label>
               <input
                 type="number"
                 value={canvasHeight}
                 onChange={(e) => setCanvasHeight(Math.max(400, +e.target.value || 1200))}
+                style={{ marginTop: '4px' }}
               />
             </div>
+            
             <div style={{ marginTop: 12 }}>
-              <button className="save-btn" onClick={() => saveNow({ elements, canvas: { height: canvasHeight } })}>
-                Save
+              <button 
+                className="save-btn" 
+                onClick={() => saveNow({ elements, canvas: { height: canvasHeight, background: canvasBackground } })}
+              >
+                Save Changes
               </button>
             </div>
+
+            
           </div>
         </aside>
       </div>
 
-      <Modal open={modalState.open} title={modalState.title} value={modalState.value} onClose={closeModal} onSubmit={submitModal} />
+      <Modal 
+        open={modalState.open} 
+        title={modalState.title} 
+        value={modalState.value} 
+        onClose={closeModal} 
+        onSubmit={submitModal} 
+      />
+
+      <PreviewModal
+        open={previewOpen}
+        elements={elements}
+        canvasHeight={canvasHeight}
+        canvasBackground={canvasBackground}
+        onClose={() => setPreviewOpen(false)}
+      />
+
+      <PublishModal
+        open={publishModalOpen}
+        onClose={() => setPublishModalOpen(false)}
+        onPublish={handlePublish}
+        publishing={publishing}
+      />
+
+      {publishSuccess && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          backgroundColor: '#10b981',
+          color: 'white',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          zIndex: 1001
+        }}>
+          <Check size={20} />
+          <span>Published successfully!</span>
+        </div>
+      )}
 
       <Footer />
+
+      <style>{`
+        .spinner-small {
+          width: 14px;
+          height: 14px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+      <AuthDebugHelper />
     </>
   );
 }
