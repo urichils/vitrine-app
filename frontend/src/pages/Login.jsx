@@ -21,7 +21,7 @@ export default function Login() {
 
     try {
       const res = await fetch("http://localhost:4322/auth/login", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
@@ -29,10 +29,15 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        login(data.token, email);
-        navigate("/dashboard");
+        // FIXED: Pass an object with token and email properties
+        const success = login({ token: data.token, email: email });
+        if (success) {
+          navigate("/dashboard");
+        } else {
+          setError("Failed to store authentication.  Please try again.");
+        }
       } else {
-        setError(data.error || "Login failed. Please try again.");
+        setError(data.error || "Login failed.  Please try again.");
       }
     } catch (err) {
       console.error(err);
@@ -56,9 +61,14 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
-        login(data.token);
-        navigate("/dashboard");
-        console.log("Logged in with Google!");
+        // FIXED: Pass an object with token and email properties
+        const success = login({ token: data.token, email: user.email });
+        if (success) {
+          navigate("/dashboard");
+          console.log("Logged in with Google!");
+        } else {
+          setError("Failed to store authentication. Please try again.");
+        }
       } else {
         console.error("Backend error:", data);
         setError(data.error || "Google login failed");
