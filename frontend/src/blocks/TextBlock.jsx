@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Type, Bold, Italic, AlignLeft, AlignCenter, AlignRight, ChevronDown, Rainbow } from "lucide-react";
+import { Type, Bold, Italic, AlignLeft, AlignCenter, AlignRight, ChevronDown, Rainbow, Palette } from "lucide-react";
 import "../styles/TextBlock.css";
 import { marked } from "marked";
 
@@ -9,68 +9,88 @@ const GOOGLE_FONTS = [
   { name: 'Roboto', value: 'Roboto' },
   { name: 'Open Sans', value: 'Open Sans' },
   { name: 'Lato', value: 'Lato' },
-  { name: 'Montserrat', value: 'Montserrat' },
-  { name: 'Poppins', value: 'Poppins' },
+  { name:   'Montserrat', value: 'Montserrat' },
+  { name:  'Poppins', value: 'Poppins' },
   { name: 'Raleway', value: 'Raleway' },
-  { name: 'Playfair Display', value: 'Playfair Display' },
-  { name: 'Merriweather', value: 'Merriweather' },
+  { name:   'Playfair Display', value: 'Playfair Display' },
+  { name:  'Merriweather', value: 'Merriweather' },
   { name: 'Source Sans Pro', value: 'Source Sans Pro' },
+];
+
+// Popular Colors for Text
+const TEXT_COLORS = [
+  { name: 'Black', value:   '#000000' },
+  { name: 'Dark Gray', value:   '#374151' },
+  { name:   'Gray', value:  '#6B7280' },
+  { name: 'Light Gray', value: '#D1D5DB' },
+  { name: 'White', value: '#FFFFFF' },
+  { name: 'Red', value:  '#EF4444' },
+  { name: 'Blue', value: '#3B82F6' },
+  { name:   'Green', value: '#10B981' },
+  { name: 'Purple', value: '#A855F7' },
+  { name: 'Orange', value:   '#F59E0B' },
 ];
 
 export default function TextBlock({ element = {}, update, readOnly }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showFontMenu, setShowFontMenu] = useState(false);
+  const [showColorMenu, setShowColorMenu] = useState(false);
   const editorRef = useRef(null);
   const fontMenuRef = useRef(null);
-  const [mode, setMode] = useState("rich"); // "rich" | "markdown"
+  const colorMenuRef = useRef(null);
+  const [mode, setMode] = useState("rich");
   const [markdown, setMarkdown] = useState("");
-
+  const contentInitializedRef = useRef(false);
 
   const selectedFont = element.style?.fontFamily || 'Inter';
+  const selectedColor = element.style?.color || '#000000';
 
   // Load Google Font dynamically
   useEffect(() => {
     if (selectedFont && selectedFont !== 'Inter') {
       const link = document.createElement('link');
       link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(selectedFont)}:wght@300;400;500;600;700&display=swap`;
-
       link.rel = 'stylesheet';
       document.head.appendChild(link);
-      
     }
   }, [selectedFont]);
 
   // Close font menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (fontMenuRef.current && !fontMenuRef.current.contains(e.target)) {
+      if (fontMenuRef.current && ! fontMenuRef.current.contains(e.target)) {
         setShowFontMenu(false);
+      }
+      if (colorMenuRef.current && !colorMenuRef.current.contains(e.target)) {
+        setShowColorMenu(false);
       }
     };
 
-    if (showFontMenu) {
+    if (showFontMenu || showColorMenu) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showFontMenu]);
+  }, [showFontMenu, showColorMenu]);
 
   const handleInput = (e) => {
-    update?.({
+    update?. ({
       content: e.currentTarget.innerHTML
     });
   };
 
+  // Set initial content only once per element ID or when in read-only mode
   useEffect(() => {
-  if (!editorRef.current) return;
-  if (!element?.content) return;
+    if (! editorRef.current) return;
+    if (! element?. content) return;
 
-  editorRef.current.innerHTML = element.content;
-  // run once per block instance
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
+    // In read-only mode (published/preview), always update content
+    // In edit mode, only set content on initial load to avoid cursor jumping
+    if (readOnly || ! contentInitializedRef.current) {
+      editorRef.current.innerHTML = element.content;
+      contentInitializedRef.current = true;
+    }
+  }, [element. id, readOnly]); // Only re-run when element ID changes or read-only changes
 
   const handleFocus = () => {
     if (readOnly) return;
@@ -85,20 +105,30 @@ export default function TextBlock({ element = {}, update, readOnly }) {
 
   const applyFormat = (command, value = null) => {
     document.execCommand(command, false, value);
-    editorRef.current?.focus();
+    editorRef.current?. focus();
   };
 
   const handleFontChange = (fontFamily) => {
     if (typeof update === 'function') {
       update({ 
-        style: { ...element.style, fontFamily }
+        style: { ...  element.style, fontFamily }
       });
     }
     setShowFontMenu(false);
     editorRef.current?.focus();
   };
 
-  const isEmpty = !element?.content || element.content === "<p>Click to edit text...</p>" || element.content.trim() === "";
+  const handleColorChange = (color) => {
+    if (typeof update === 'function') {
+      update({ 
+        style: { ... element.style, color }
+      });
+    }
+    applyFormat('foreColor', color);
+    setShowColorMenu(false);
+  };
+
+  const isEmpty = !element?.  content || element.content === "<p>Click to edit text...</p>" || element.content. trim() === "";
 
   return (
     <div className="text-block-root">
@@ -110,9 +140,11 @@ export default function TextBlock({ element = {}, update, readOnly }) {
             <button
               onMouseDown={(e) => {
                 e.preventDefault();
-                setShowFontMenu(!showFontMenu);
-              }} className="text-toolbar-btn"
-              title="Font family">
+                setShowFontMenu(! showFontMenu);
+              }}
+              className="text-toolbar-btn"
+              title="Font family"
+            >
               <span className="max-w-[80px] truncate">{selectedFont}</span>
               <ChevronDown size={14} />
             </button>
@@ -121,12 +153,12 @@ export default function TextBlock({ element = {}, update, readOnly }) {
               <div className="font-menu">
                 {GOOGLE_FONTS.map((font) => (
                   <button
-                    key={font.value}
+                    key={font. value}
                     onMouseDown={(e) => {
                       e.preventDefault();
-                      handleFontChange(font.value);
+                      handleFontChange(font. value);
                     }}
-                    className={`font-menu-item ${selectedFont === font.value ? "active" : ""}`}
+                    className={`font-menu-item ${selectedFont === font. value ? "active" : ""}`}
                   >
                     {font.name}
                   </button>
@@ -158,6 +190,52 @@ export default function TextBlock({ element = {}, update, readOnly }) {
           >
             <Italic size={16} />
           </button>
+
+          <div className="toolbar-divider" />
+
+          {/* Color Picker */}
+          <div style={{ position: 'relative' }} ref={colorMenuRef}>
+            <button
+              onMouseDown={(e) => {
+                e.preventDefault();
+                setShowColorMenu(! showColorMenu);
+              }}
+              className="text-toolbar-btn"
+              title="Text color"
+              style={{ display: 'flex', alignItems:  'center', gap: '6px' }}
+            >
+              <div
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '2px',
+                  backgroundColor: selectedColor,
+                  border: '1px solid #ccc'
+                }}
+              />
+              <Palette size={16} />
+            </button>
+
+            {showColorMenu && (
+              <div className="color-menu">
+                {TEXT_COLORS.map((color) => (
+                  <button
+                    key={color.value}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleColorChange(color. value);
+                    }}
+                    className="color-menu-item"
+                    title={color.name}
+                    style={{
+                      backgroundColor: color.value,
+                      border: selectedColor === color.value ? '3px solid #000' : '1px solid #ccc'
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
           <div className="toolbar-divider" />
 
@@ -199,9 +277,10 @@ export default function TextBlock({ element = {}, update, readOnly }) {
           <select
             onMouseDown={(e) => e.preventDefault()}
             onChange={(e) => {
-              applyFormat('fontSize', e.target.value);
+              applyFormat('fontSize', e. target.value);
               e.target.value = '3';
-            }} className="text-toolbar-select"
+            }}
+            className="text-toolbar-select"
             defaultValue="3"
           >
             <option value="1">Small</option>
@@ -213,27 +292,27 @@ export default function TextBlock({ element = {}, update, readOnly }) {
           <div className="toolbar-divider" />
 
           <button
-          className="text-toolbar-btn"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            if (mode === "rich") {
-              setMarkdown(editorRef.current?.innerText || "");
-              setMode("markdown");
-            } else {
-              const html = marked.parse(markdown || "");
-              update?.({ content: html });
-              setMode("rich");
-              setTimeout(() => {
-                if (editorRef.current) {
-                  editorRef.current.innerHTML = html;
-                }
-              }, 0);
-            }
-          }}
-          title="Toggle Markdown"
-        >
-          <Rainbow size={16} />
-        </button>
+            className="text-toolbar-btn"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              if (mode === "rich") {
+                setMarkdown(editorRef.current?.innerText || "");
+                setMode("markdown");
+              } else {
+                const html = marked. parse(markdown || "");
+                update?. ({ content: html });
+                setMode("rich");
+                setTimeout(() => {
+                  if (editorRef.current) {
+                    editorRef.current.innerHTML = html;
+                  }
+                }, 0);
+              }
+            }}
+            title="Toggle Markdown"
+          >
+            <Rainbow size={16} />
+          </button>
         </div>
       )}
 
@@ -241,16 +320,21 @@ export default function TextBlock({ element = {}, update, readOnly }) {
       <div
         ref={editorRef}
         className="text-editor"
-        contentEditable={!readOnly}
+        contentEditable={! readOnly}
         suppressContentEditableWarning
         data-placeholder="Click to edit text..."
         onInput={handleInput}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        style={{ fontFamily: selectedFont }}
+        style={{ 
+          fontFamily: selectedFont,
+          color: selectedColor,
+          backgroundColor:  readOnly ? 'transparent' :  undefined
+        }}
       />
+
       {/* Empty State Hint */}
-      {!isFocused && isEmpty && !readOnly && (
+      {! isFocused && isEmpty && ! readOnly && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d1d5db', padding: '12px' }}>
           <Type size={24} />
         </div>

@@ -171,3 +171,9 @@ body {
   position: relative;  /* Important for absolute positioning context */
   width: 100%;
 }
+
+.footer .gradient-text {
+  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

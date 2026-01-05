@@ -1,4 +1,12 @@
-.button-block {
+/* Button Block Root */
+.button-block-root {
+  display: inline-block;
+  position: relative;
+  /* group:  hover; */
+}
+
+/* Main Button */
+.button-main {
   border: none;
   display: inline-flex;
   align-items: center;
@@ -7,64 +15,221 @@
   cursor: pointer;
   transition: filter 0.2s ease;
   font-family: inherit;
-  background-color: rgb(0, 219, 166);
 }
 
-.button-block:focus {
-  outline: 2px solid rgba(59, 130, 246, 0.4);
+.button-main:focus {
+  outline: 2px solid rgba(0, 219, 166, 0.4);
   outline-offset: 2px;
 }
 
-.button-block:hover {
+.button-main:hover {
   filter: brightness(0.95);
 }
 
-.button-block-root {
-  display: inline-block;
-  position: relative;
-}
-
+/* Settings Button */
 .button-settings-btn {
   position: absolute;
   top: -8px;
   right: -8px;
   background-color: rgb(0, 219, 166);
   color: white;
-  border: none;
-  padding: 4px;
+  border:  none;
+  padding: 6px;
   border-radius: 50%;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
 .button-settings-btn:hover {
-  background-color: #2563eb;
+  background-color: rgb(0, 200, 150);
+  transform: scale(1.1);
 }
 
 .button-block-root:hover .button-settings-btn {
   opacity: 1;
 }
 
+/* Settings Panel */
 .button-settings-panel {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 8px;
-  background: white;
+  position: fixed;
+  top: 140px;
+  right: 20px;
+  background:  white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  min-width: 280px;
-  max-width: 320px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 4000;
+  width: 320px;
+  max-height:  70vh;
+  overflow-y:  auto;
+  animation: slideInRight 0.2s ease;
 }
 
-.button-settings-panel .space-y-4 > * + * {
-  margin-top: 1rem;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform:  translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Space for grouping */
+.space-y-4 > * + * {
+  margin-top:  16px;
+}
+
+/* Label Styling */
+.button-settings-panel label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom:  8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Input Styling */
+.button-settings-panel input[type="text"],
+.button-settings-panel input[type="color"],
+.button-settings-panel input[type="range"],
+.button-settings-panel select {
+  font-size: 14px;
+}
+
+.button-settings-panel input[type="text"],
+.button-settings-panel select {
+  padding: 8px 10px;
+}
+
+.button-settings-panel input[type="range"] {
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e5e7eb;
+  border-radius: 4px;
+  outline: none;
+  accent-color: rgb(0, 219, 166);
+}
+
+.button-settings-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: rgb(0, 219, 166);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.button-settings-panel input[type="range"]::-webkit-slider-thumb:hover {
+  background: rgb(0, 200, 150);
+  transform: scale(1.2);
+}
+
+.button-settings-panel input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: rgb(0, 219, 166);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.button-settings-panel input[type="range"]::-moz-range-thumb:hover {
+  background: rgb(0, 200, 150);
+  transform: scale(1.2);
+}
+
+.button-settings-panel input[type="color"] {
+  cursor: pointer;
+}
+
+.button-settings-panel input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 6px;
+}
+
+.button-settings-panel input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+.button-settings-panel input[type="color"]::-moz-color-swatch {
+  border:  none;
+  border-radius:  6px;
+}
+
+/* Done Button */
+.button-done-btn {
+  padding: 10px;
+  background:  #f3f4f6;
+  color: #374151;
+  font-size: 13px;
+  font-weight:  500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-top: 8px;
+}
+
+.button-done-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  grid-template-columns:  repeat(2, minmax(0, 1fr));
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+/* Scrollbar Styling */
+.button-settings-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.button-settings-panel::-webkit-scrollbar-track {
+  background:  transparent;
+}
+
+.button-settings-panel::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.button-settings-panel::-webkit-scrollbar-thumb:hover {
+  background:  #d1d5db;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .button-settings-panel {
+    width: calc(100vw - 40px);
+    right: 20px;
+    left: 20px;
+  }
 }

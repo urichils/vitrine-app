@@ -1,7 +1,7 @@
 :root {
   --muted: #6b7280;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
+  --accent: rgb(0, 219, 166);
+  --accent-hover: rgb(0, 200, 150);
   --danger: #ef4444;
   --danger-hover: #dc2626;
   --success: #10b981;
@@ -57,7 +57,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border);
+  border:  1px solid var(--border);
   background: white;
   color: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
   border-radius: 8px;
@@ -68,7 +68,7 @@ button {
 }
 
 .icon-btn:hover {
-  background: var(--accent);
+  background:  var(--accent);
   color: white;
   border-color: var(--accent);
   transform: translateY(-1px);
@@ -109,6 +109,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
+  text-decoration: none;
 }
 
 .top-btn:hover {
@@ -153,7 +154,7 @@ button {
   padding: 60px 32px;
   border: 2px dashed var(--border);
   border-radius: 12px;
-  text-align: center;
+  text-align:  center;
   color: var(--muted);
   background: var(--bg-light);
   font-size: 15px;
@@ -161,9 +162,9 @@ button {
 
 /* ================== RND BLOCKS ================== */
 .canvas-item-rnd {
-  position: absolute !important;
+  position: absolute ! important;
   display: block;
-  overflow: visible !important;
+  overflow: visible ! important;
   z-index: 100;
 }
 
@@ -178,7 +179,7 @@ button {
   box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
   cursor: move;
-  overflow: visible !important;
+  overflow: visible ! important;
   position: relative;
 }
 
@@ -230,11 +231,11 @@ button {
 }
 
 .tiny {
-  border: 1px solid var(--border);
+  border:  1px solid var(--border);
   background: white;
   cursor: pointer;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius:  6px;
   font-size: 12px;
   font-weight: 500;
   transition: all 0.15s ease;
@@ -273,7 +274,7 @@ button {
 .content-editable:focus {
   border-color: var(--accent);
   background: white;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 219, 166, 0.1);
 }
 
 /* ================== IMAGE BLOCKS ================== */
@@ -319,10 +320,10 @@ button {
   top: 140px;
   right: 20px;
   width: 260px;
-  max-height: calc(100vh - 160px);
+  max-height:  calc(100vh - 160px);
   overflow-y: auto;
-  z-index: 3000;
-  box-shadow: var(--shadow-lg);
+  z-index:  3000;
+  box-shadow:  var(--shadow-lg);
   transition: transform 0.25s ease;
 }
 
@@ -337,7 +338,7 @@ button {
 .prop-panel label {
   display: block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight:  500;
   color: #6b7280;
   margin-bottom: 6px;
 }
@@ -355,7 +356,7 @@ button {
 .prop-panel input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 219, 166, 0.1);
 }
 
 .prop-panel input[type="color"] {
@@ -368,13 +369,13 @@ button {
   padding: 10px;
   background: var(--accent);
   color: white;
-  border: none;
-  border-radius: 8px;
+  border:  none;
+  border-radius:  8px;
   cursor: pointer;
   font-weight: 500;
   font-size: 14px;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow:  var(--shadow-sm);
 }
 
 .save-btn:hover {
@@ -427,16 +428,16 @@ button {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform:  translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform:  translateY(0);
   }
 }
 
 .img-url-modal h3 {
-  margin: 0 0 16px;
+  margin:  0 0 16px;
   font-size: 18px;
   font-weight: 600;
   color: #111827;
@@ -454,7 +455,7 @@ button {
 .img-url-modal input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 219, 166, 0.1);
 }
 
 .modal-actions {
@@ -532,8 +533,8 @@ button {
     z-index: 3001;
     background: var(--accent);
     color: white;
-    border: none;
-    border-radius: 50%;
+    border:  none;
+    border-radius:  50%;
     width: 56px;
     height: 56px;
     font-size: 24px;
@@ -556,7 +557,7 @@ button {
 
   .top-btn {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size:  13px;
   }
 
   .icon-toolbar {
@@ -661,5 +662,5 @@ button {
 .color-swatches {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap:  wrap;
 }

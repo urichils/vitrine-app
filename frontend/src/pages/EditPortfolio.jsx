@@ -8,6 +8,7 @@ import { useAuth } from "../context/authContext";
 import Footer from "../components/Footer";
 import "../styles/EditPortfolio.css";
 import AuthDebugHelper from "../components/AuthDebugHelper";
+import { Link } from "react-router-dom";
 
 const genId = () =>
   crypto?.randomUUID
@@ -371,7 +372,7 @@ export default function EditPortfolio() {
             </button>
 
             <button className="top-btn top-btn-ghost">
-              {user?.username || "Account"}
+              <Link to="/dashboard" >{user?.username || "Account"}</Link>
             </button>
           </div>
         </div>

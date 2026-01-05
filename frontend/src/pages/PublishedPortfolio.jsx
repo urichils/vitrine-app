@@ -146,7 +146,7 @@ export default function PublishedPortfolio() {
 
       {/* Optional: Add a subtle footer with branding */}
       <div className="published-footer">
-        <p>Powered by Portfolio Builder</p>
+        <p>Powered by <span className="gradient-text">Vitrine</span></p>
       </div>
     </div>
   );

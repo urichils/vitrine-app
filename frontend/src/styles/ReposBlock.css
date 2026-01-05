@@ -1,0 +1,524 @@
+/* ReposBlock Container */
+.repos-block-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+}
+
+/* Header Section */
+.repos-header {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+  overflow: visible;
+}
+
+.repos-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.repos-header-icon {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repos-header-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.repos-header-text h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.repos-header-text p {
+  font-size: 13px;
+  margin: 4px 0 0 0;
+  color: #cbd5e1;
+}
+
+.repos-header-username {
+  color: #e2e8f0 !important;
+  font-weight: 600;
+}
+
+/* Main Content Area */
+.repos-content {
+  flex: 1;
+  padding: 32px;
+  overflow: visible;
+  background: white;
+}
+
+/* Loading State */
+.repos-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 16px;
+}
+
+.repos-loading-spinner {
+  width: 48px;
+  height: 48px;
+  color: #94a3b8;
+  animation: spin 1s linear infinite;
+}
+
+.repos-loading-text {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.repos-error {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: #fef2f2;
+  border:  1px solid #fecaca;
+  border-radius:  8px;
+  align-items: flex-start;
+}
+
+.repos-error-icon {
+  width: 20px;
+  height: 20px;
+  color: #dc2626;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.repos-error-content h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7f1d1d;
+  margin:  0;
+}
+
+.repos-error-content p {
+  font-size: 13px;
+  color: #b91c1c;
+  margin:  4px 0 0 0;
+}
+
+/* Empty State */
+.repos-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.repos-empty-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.repos-empty-icon svg {
+  width: 40px;
+  height: 40px;
+  color: #94a3b8;
+}
+
+.repos-empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin:  0 0 8px 0;
+}
+
+.repos-empty-text {
+  font-size:  14px;
+  color:  #4b5563;
+  max-width: 280px;
+  margin: 0;
+}
+
+/* Repository Grid */
+.repos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  width: 100%;
+  overflow:  visible;
+}
+
+@media (max-width: 1024px) {
+  .repos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .repos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Repository Card */
+.repo-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border:  1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  overflow: visible;
+}
+
+.repo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left:  0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  opacity: 0;
+  transition:  opacity 0.3s ease;
+  border-radius: 12px 12px 0 0;
+  z-index: 1;
+}
+
+.repo-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+}
+
+.repo-card:hover::before {
+  opacity: 1;
+}
+
+.repo-card:active {
+  transform: scale(0.98);
+}
+
+/* Card Header */
+.repo-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  overflow: visible;
+}
+
+.repo-card-title {
+  font-size: 16px;
+  font-weight:  700;
+  color: #0f172a;
+  margin:  0;
+  word-break: break-word;
+  flex:  1;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.repo-card:hover .repo-card-title {
+  color: #1e293b;
+}
+
+.repo-card-link-icon {
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+  margin-top: 2px;
+}
+
+.repo-card:hover .repo-card-link-icon {
+  opacity: 1;
+  color: #64748b;
+}
+
+/* Card Description */
+.repo-card-description {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp:  2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+/* Card Footer */
+.repo-card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  overflow: visible;
+}
+
+.repo-card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom:  12px;
+  overflow: visible;
+}
+
+/* Stat Badge */
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size:  12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.stat-badge-stars {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+}
+
+.stat-badge-stars svg {
+  width: 13px;
+  height: 13px;
+  color: #d97706;
+}
+
+.stat-badge-stars:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  transform: scale(1.05);
+}
+
+.stat-badge-forks {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.stat-badge-forks svg {
+  width: 13px;
+  height: 13px;
+  color: #475569;
+}
+
+.stat-badge-forks:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+}
+
+/* Language Badge */
+.repo-language {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  overflow: visible;
+}
+
+.language-dot {
+  width: 10px;
+  height: 10px;
+  border-radius:  50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.language-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+/* Sidebar */
+.repos-sidebar {
+  width: 160px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  overflow: visible;
+}
+
+.repos-sidebar-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+/* Configure Button */
+.repos-configure-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.repos-configure-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left:  -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: left 0.4s ease;
+}
+
+.repos-configure-btn:hover {
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.repos-configure-btn:hover::before {
+  left: 100%;
+}
+
+.repos-configure-btn:active {
+  transform: scale(0.95);
+}
+
+.repos-configure-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.repos-configure-help {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 8px;
+  max-width: 140px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .repos-block-container {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .repos-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+    flex-direction: row;
+    gap: 12px;
+    padding: 16px;
+    overflow: visible;
+  }
+
+  .repos-configure-btn {
+    flex:  1;
+    padding: 12px;
+  }
+
+  .repos-configure-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .repos-sidebar-label {
+    order: -1;
+    flex:  0 0 100%;
+  }
+
+  .repos-content {
+    padding: 16px;
+    overflow: visible;
+  }
+
+  .repos-header {
+    padding: 16px;
+    overflow: visible;
+  }
+
+  .repos-grid {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+}
+
+/* Scroll Styles - only apply to the scrollable content area if needed */
+.repos-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.repos-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.repos-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.repos-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
