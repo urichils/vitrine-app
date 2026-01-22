@@ -6,6 +6,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 12px 0;
+  min-height: 30px;
 }
 
 /* The actual divider line */
@@ -14,12 +16,13 @@
   margin: 0;
   padding: 0;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 /* Settings button */
 .divider-settings-btn {
   position: absolute;
-  top:  50%;
+  top: 50%;
   left: 50%;
   transform:  translate(-50%, -50%);
   background: white;
@@ -34,6 +37,9 @@
   align-items: center;
   justify-content: center;
   color: #6b7280;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
 
 .divider-root:hover .divider-settings-btn {
@@ -59,7 +65,7 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 4000;
   width: 320px;
-  max-height: 70vh;
+  max-height:  70vh;
   overflow-y:  auto;
   animation: slideInRight 0.2s ease;
 }
@@ -67,7 +73,7 @@
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform:  translateX(20px);
   }
   to {
     opacity: 1;
@@ -106,6 +112,7 @@
   border: 2px solid #d1d5db;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .divider-color-preset:hover {
@@ -136,7 +143,7 @@ input[type="range"]::-webkit-slider-thumb {
   height: 18px;
   background: rgb(0, 219, 166);
   border-radius: 50%;
-  cursor:  pointer;
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 
@@ -162,7 +169,7 @@ input[type="range"]::-moz-range-thumb:hover {
 
 /* Color input styling */
 input[type="color"] {
-  -webkit-appearance:  none;
+  -webkit-appearance: none;
   appearance: none;
   border: none;
   cursor: pointer;
@@ -179,8 +186,8 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 input[type="color"]::-moz-color-swatch {
-  border:  none;
-  border-radius:  6px;
+  border: none;
+  border-radius: 6px;
 }
 
 /* Label styling */
@@ -210,7 +217,7 @@ input[type="color"]::-moz-color-swatch {
 }
 
 .divider-done-btn:hover {
-  background: #e5e7eb;
+  background:  #e5e7eb;
 }
 
 /* Preview mode - ensure divider is always visible */
@@ -219,9 +226,126 @@ input[type="color"]::-moz-color-swatch {
 }
 
 /* Mobile responsive */
-@media (max-width: 640px) {
-  .divider-options-panel {
-    min-width: 260px;
-    max-width: calc(100vw - 32px);
+@media (max-width: 768px) {
+  .divider-root {
+    padding: 8px 0;
+    min-height: 20px;
+  }
+
+  .divider-settings-btn {
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+  }
+
+  .divider-settings-panel {
+    width: calc(100vw - 40px);
+    right: 20px;
+    left: 20px;
+    top: auto;
+    bottom: 20px;
+  }
+
+  .divider-style-btn {
+    padding: 6px 10px;
+    font-size:  11px;
+  }
+
+  .divider-color-preset {
+    width: 28px;
+    height: 28px;
+  }
+
+  .divider-done-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .divider-root {
+    padding:  6px 0;
+    min-height: 18px;
+  }
+
+  .divider-settings-btn {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+  }
+
+  .divider-settings-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .divider-settings-panel {
+    width: calc(100vw - 32px);
+    right: 16px;
+    left: 16px;
+    padding: 12px;
+    max-height: 60vh;
+  }
+
+  .divider-label {
+    font-size: 10px;
+  }
+
+  .divider-style-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .divider-color-preset {
+    width:  24px;
+    height:  24px;
+  }
+
+  .divider-done-btn {
+    padding: 6px;
+    font-size: 11px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .divider-root {
+    padding: 4px 0;
+  }
+
+  .divider-settings-btn {
+    width: 20px;
+    height: 20px;
+  }
+
+  .divider-settings-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .divider-settings-panel {
+    width: calc(100vw - 24px);
+    right: 12px;
+    left: 12px;
+    padding: 10px;
+  }
+
+  .divider-style-btn {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  .divider-color-preset {
+    width:  20px;
+    height:  20px;
   }
 }

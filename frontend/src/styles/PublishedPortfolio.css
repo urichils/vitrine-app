@@ -1,5 +1,3 @@
-/* src/styles/PublishedPortfolio.css */
-
 .published-portfolio {
   width: 100%;
   min-height: 100vh;
@@ -15,7 +13,7 @@
 .published-content {
   position: relative;
   width: 100%;
-  height: 100%;
+  margin:  0 auto;
 }
 
 .published-element {
@@ -57,7 +55,7 @@
 .published-loading p {
   font-size: 16px;
   font-weight: 500;
-  margin: 0;
+  margin:  0;
 }
 
 /* Error state */
@@ -73,7 +71,7 @@
 .error-content {
   background: white;
   padding: 40px;
-  border-radius: 16px;
+  border-radius:  16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   text-align: center;
@@ -108,8 +106,8 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: #fee;
-  border: 2px dashed #f88;
+  background:  #fee;
+  border:  2px dashed #f88;
   border-radius: 8px;
   color: #c00;
   font-size: 14px;
@@ -130,12 +128,29 @@
   font-weight: 500;
 }
 
-/* Responsive design */
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove default margins */
+body {
+  margin:  0;
+  padding: 0;
+  font-family:  -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.footer .gradient-text {
+  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @media (max-width: 768px) {
-  /* .published-element {
-
-  } */
-
   .error-content {
     padding: 30px 20px;
   }
@@ -143,37 +158,23 @@
   .error-content h2 {
     font-size: 20px;
   }
+
+  .published-footer {
+    padding: 16px;
+    font-size: 12px;
+  }
 }
 
-/* Smooth scrolling for the entire page */
-html {
-  scroll-behavior: smooth;
-}
+@media (max-width: 480px) {
+  .error-content {
+    padding: 20px 16px;
+  }
 
-/* Remove any default margins */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  .error-content h2 {
+    font-size: 18px;
+  }
 
-.published-canvas {
-  position: relative;  /* Important for absolute positioning */
-  width: 100%;
-  transition: background-color 0.3s ease;
-}
-
-.published-content {
-  position: relative;  /* Important for absolute positioning context */
-  width: 100%;
-}
-
-.footer .gradient-text {
-  background: linear-gradient(90deg, rgb(0, 219, 166), rgb(20, 215, 228));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  .empty-portfolio {
+    font-size: 16px;
+  }
 }

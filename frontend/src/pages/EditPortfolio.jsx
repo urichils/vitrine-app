@@ -1,7 +1,6 @@
-// src/pages/EditPortfolio.jsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
-import { Move, Trash2, Eye, Upload, X, Check } from "lucide-react";
+import { Move, Trash2, Eye, Upload, X, Check, Settings } from "lucide-react";
 import { BLOCKS } from "../BlockRegistry";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
@@ -11,7 +10,7 @@ import AuthDebugHelper from "../components/AuthDebugHelper";
 import { Link } from "react-router-dom";
 
 const genId = () =>
-  crypto?.randomUUID
+  crypto?. randomUUID
     ? crypto.randomUUID()
     : "id_" + Math.random().toString(36).slice(2, 9);
 
@@ -48,7 +47,7 @@ function Modal({ open, title, value, onClose, onSubmit }) {
   );
 }
 
-function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose }) {
+function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose, scaleX = 1, scaleY = 1 }) {
   if (!open) return null;
 
   return (
@@ -72,7 +71,6 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose 
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
         }}
       >
-        {/* Preview Header */}
         <div style={{
           padding: '16px 24px',
           borderBottom: '2px solid #e5e7eb',
@@ -83,7 +81,7 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose 
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Eye size={20} style={{ color: '#6b7280' }} />
-            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>Preview Mode</h3>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight:  '600' }}>Preview Mode</h3>
           </div>
           <button
             onClick={onClose}
@@ -104,7 +102,6 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose 
           </button>
         </div>
 
-        {/* Preview Content */}
         <div style={{
           flex: 1,
           overflow: 'auto',
@@ -117,17 +114,18 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose 
           }}>
             {elements.map((el) => {
               const cfg = BLOCKS[el.type];
-              const Block = cfg?.Render;
+              const Block = cfg?. Render;
 
               return (
                 <div
                   key={el.id}
                   style={{
                     position: 'absolute',
-                    left: el.x,
-                    top: el.y,
-                    width: el.width,
-                    height: el.height,
+                    left: el.x * scaleX,
+                    top: el.y * scaleY,
+                    width: el. width * scaleX,
+                    minHeight: el.height * scaleY,
+                    height: 'auto',
                     pointerEvents: 'auto'
                   }}
                 >
@@ -157,12 +155,12 @@ function PublishModal({ open, onClose, onPublish, publishing }) {
   return (
     <div className="img-url-modal-backdrop">
       <div className="img-url-modal" style={{ maxWidth: '500px' }}>
-        <h3 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap:  '12px' }}>
           <Upload size={24} />
           Publish Portfolio
         </h3>
         <p style={{ margin: '16px 0', color: '#6b7280', fontSize: '14px' }}>
-          Publishing will make your portfolio live and accessible to anyone with the link. 
+          Publishing will make your portfolio live and accessible to anyone with the link.  
           All changes will be saved automatically.
         </p>
         <div className="modal-actions">
@@ -182,7 +180,7 @@ function PublishModal({ open, onClose, onPublish, publishing }) {
             {publishing ? (
               <>
                 <span className="spinner-small" />
-                Publishing...
+                Publishing...  
               </>
             ) : (
               <>
@@ -210,6 +208,8 @@ export default function EditPortfolio() {
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [canvasWidth, setCanvasWidth] = useState(1400);
+  const [propPanelOpen, setPropPanelOpen] = useState(false);
   const [modalState, setModalState] = useState({
     open: false,
     id: null,
@@ -219,15 +219,29 @@ export default function EditPortfolio() {
   const [selectedId, setSelectedId] = useState(null);
 
   const mountedRef = useRef(true);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const handleResize = () => setCanvasHeight(window.innerHeight);
+    const handleResize = () => {
+      if (canvasRef.current) {
+        setCanvasWidth(canvasRef.current.offsetWidth);
+      }
+    };
+    
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const resizeObserver = new ResizeObserver(handleResize);
+    if (canvasRef.current) {
+      resizeObserver.observe(canvasRef.current);
+    }
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (! user) return;
     mountedRef.current = true;
 
     (async () => {
@@ -238,16 +252,15 @@ export default function EditPortfolio() {
         );
         
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
-        console.log("Fetch response:", res);
 
         const text = await res.text();
-        if (!text) throw new Error("Empty response");
+        if (! text) throw new Error("Empty response");
 
         const data = JSON.parse(text);
         if (!mountedRef.current) return;
 
-        setElements(data?.elements || []);
-        if (data.canvas?.height) setCanvasHeight(data.canvas.height);
+        setElements(data?. elements || []);
+        if (data. canvas?. height) setCanvasHeight(data.canvas. height);
         if (data.canvas?.background) setCanvasBackground(data.canvas.background);
       } catch (err) {
         console.error("Failed to load portfolio:", err);
@@ -280,17 +293,15 @@ export default function EditPortfolio() {
   const debouncedSave = useRef(debounce((p) => saveNow(p), 900)).current;
 
   useEffect(() => {
-    if (!loading) debouncedSave({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
+    if (! loading) debouncedSave({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
   }, [elements, canvasHeight, canvasBackground, debouncedSave, loading]);
 
   const handlePublish = async () => {
     setPublishing(true);
     
     try {
-      // First save current state
       await saveNow({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
       
-      // Then publish
       const res = await fetch(`http://localhost:4322/portfolio/${portfolioId}/publish`, {
         method: "POST",
         headers: {
@@ -304,13 +315,12 @@ export default function EditPortfolio() {
         setTimeout(() => {
           setPublishModalOpen(false);
           setPublishSuccess(false);
-          // Optionally navigate to the published portfolio
           navigate(`/portfolio/${portfolioId}`);
         }, 1500);
       }
     } catch (err) {
       console.error("Publish failed:", err);
-      alert("Failed to publish portfolio. Please try again.");
+      alert("Failed to publish portfolio.  Please try again.");
     } finally {
       setPublishing(false);
     }
@@ -321,9 +331,9 @@ export default function EditPortfolio() {
     const base = {
       id: genId(),
       type,
-      x: Math.max(40, window.innerWidth * 0.08),
+      x: 40,
       y: 160 + elements.length * 40,
-      width: cfg.defaultWidth,
+      width: Math.min(cfg.defaultWidth, canvasWidth - 80),
       height: cfg.defaultHeight,
       content: cfg.defaultContent || "",
       style: {},
@@ -335,8 +345,6 @@ export default function EditPortfolio() {
     }, 60);
   };
 
-  const selected = elements.find((el) => el.id === selectedId);
-
   const update = (id, patch) =>
     setElements((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
 
@@ -344,10 +352,10 @@ export default function EditPortfolio() {
     setElements((prev) => prev.filter((p) => p.id !== id));
 
   const openModalFor = (id, title, initial = "") =>
-    setModalState({ open: true, id, title, value: initial });
+    setModalState({ open:  true, id, title, value: initial });
 
   const closeModal = () =>
-    setModalState({ open: false, id: null, title: "", value: "" });
+    setModalState({ open:  false, id: null, title:  "", value: "" });
 
   const submitModal = (val) => {
     if (!modalState.id) return;
@@ -359,27 +367,28 @@ export default function EditPortfolio() {
   return (
     <>
       <div className="canvas-shell-full">
-        <div className="editor-top-right">
-          <div className="editor-top-right">
-            <button className="top-btn top-btn-secondary" onClick={() => setPreviewOpen(true)}>
-              <Eye size={16} />
-              Preview
-            </button>
+        {/* Top Action Buttons - Now Below Toolbar */}
+        <div className="editor-action-bar">
+          <button className="action-btn action-btn-secondary" onClick={() => setPreviewOpen(true)}>
+            <Eye size={16} />
+            <span>Preview</span>
+          </button>
 
-            <button className="top-btn" onClick={() => setPublishModalOpen(true)}>
-              <Upload size={16} />
-              Publish
-            </button>
+          <button className="action-btn" onClick={() => setPublishModalOpen(true)}>
+            <Upload size={16} />
+            <span>Publish</span>
+          </button>
 
-            <button className="top-btn top-btn-ghost">
-              <Link to="/dashboard" >{user?.username || "Account"}</Link>
-            </button>
-          </div>
+          <button className="action-btn action-btn-ghost">
+            <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none', color: 'inherit' }}>
+              {user?. username || "Account"}
+            </Link>
+          </button>
         </div>
 
         <div className="icon-toolbar">
           {Object.values(BLOCKS).map((b) => (
-            <button key={b.type} className="icon-btn" onClick={() => add(b.type)} title={b.label}>
+            <button key={b.type} className="icon-btn" onClick={() => add(b.type)} title={b.label} aria-label={b.label}>
               {b.icon}
             </button>
           ))}
@@ -387,6 +396,7 @@ export default function EditPortfolio() {
 
         <main className="canvas-area">
           <div 
+            ref={canvasRef}
             className="canvas-vw" 
             style={{ 
               minHeight: canvasHeight,
@@ -394,7 +404,14 @@ export default function EditPortfolio() {
               transition: 'background-color 0.3s ease'
             }}
           >
-            <div className="canvas-vw-inner">
+            <div className="canvas-vw-inner"
+              style={{
+                  position: 'relative',
+                  width: '100%',
+                  minHeight: canvasHeight,
+                  height: 'auto',
+                  overflow: 'visible'
+                }}>
               {elements.length === 0 && (
                 <div className="canvas-empty">Add blocks from the top to start</div>
               )}
@@ -408,27 +425,34 @@ export default function EditPortfolio() {
                     id={el.id}
                     size={{ width: el.width, height: el.height }}
                     position={{ x: el.x, y: el.y }}
-                    onDragStop={(_, d) => update(el.id, { x: Math.max(0, d.x), y: Math.max(0, d.y) })}
-                    onResizeStop={(_, __, ref, ___, pos) =>
+                    onDragStop={(_, d) => {
+                      const maxX = Math.max(0, canvasWidth - el.width);
+                      update(el.id, { 
+                        x: Math.max(0, Math.min(d.x, maxX)), 
+                        y: Math.max(0, d.y) 
+                      });
+                    }}
+                    onResizeStop={(_, __, ref, ___, pos) => {
+                      const maxX = Math.max(0, canvasWidth - ref.offsetWidth);
                       update(el.id, {
                         width: Math.max(60, ref.offsetWidth),
                         height: Math.max(40, ref.offsetHeight),
-                        x: Math.max(0, pos.x),
+                        x: Math.max(0, Math.min(pos.x, maxX)),
                         y: Math.max(0, pos.y),
-                      })
-                    }
-                    bounds="parent"
+                      });
+                    }}
+                    bounds=".canvas-vw-inner"
                     minWidth={60}
                     minHeight={40}
                     className="canvas-item-rnd"
                     dragHandleClassName="drag-handle"
                   >
                     <div className="canvas-item" onClick={() => setSelectedId(el.id)} id={el.id}>
-                      <div className="item-toolbar" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div className="item-toolbar">
                         <div className="drag-handle"><Move size={14} /></div>
-                        <div style={{ fontSize: 12, color: "#666", marginRight: "auto" }}>{cfg?.label || el.type}</div>
+                        <div style={{ fontSize: 12, color: "#666", marginRight: "auto" }}>{cfg?. label || el.type}</div>
                         <div className="item-actions">
-                          {["image", "embed", "repos", "button", "icon"].includes(el.type) && (
+                          {["image", "embed", "repos", "button", "icon"]. includes(el.type) && (
                             <button
                               className="tiny"
                               onClick={() =>
@@ -459,23 +483,34 @@ export default function EditPortfolio() {
           </div>
         </main>
 
-        <aside className="prop-panel open">
-          <div className="prop-panel-inner">
+        {/* Settings Icon Button - Bottom Right on Mobile */}
+        <button className="settings-toggle" onClick={() => setPropPanelOpen(! propPanelOpen)} title="Canvas Settings">
+          <Settings size={20} />
+        </button>
+
+        {/* Canvas Settings Panel - Bottom Right, Collapsible on Mobile */}
+        <aside className={`prop-panel ${propPanelOpen ? 'open' : ''}`}>
+          <div className="prop-panel-header">
             <strong>Canvas Settings</strong>
-            
-            <div style={{ marginTop: 12 }}>
-              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+            <button className="close-settings" onClick={() => setPropPanelOpen(false)}>
+              <X size={18} />
+            </button>
+          </div>
+
+          <div className="prop-panel-inner">
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom:  '4px' }}>
                 Background Color
               </label>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <input
                   type="color"
                   value={canvasBackground}
                   onChange={(e) => setCanvasBackground(e.target.value)}
                   style={{ 
                     width: '50px', 
-                    height: '32px', 
-                    border: '1px solid #ddd',
+                    height:  '32px', 
+                    border:  '1px solid #ddd',
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
@@ -483,19 +518,19 @@ export default function EditPortfolio() {
                 <input
                   type="text"
                   value={canvasBackground}
-                  onChange={(e) => setCanvasBackground(e.target.value)}
+                  onChange={(e) => setCanvasBackground(e. target.value)}
                   placeholder="#ffffff"
                   style={{ 
                     flex: 1,
                     padding: '6px 8px',
                     fontSize: '12px',
                     border: '1px solid #ddd',
-                    borderRadius: '4px'
+                    borderRadius:  '4px'
                   }}
                 />
               </div>
               <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
-                {['#ffffff', '#f3f4f6', '#1f2937', '#3b82f6', '#10b981', '#f59e0b'].map(color => (
+                {['#ffffff', '#f3f4f6', '#1f2937', '#3b82f6', '#10b981', '#f59e0b']. map(color => (
                   <button
                     key={color}
                     onClick={() => setCanvasBackground(color)}
@@ -504,7 +539,7 @@ export default function EditPortfolio() {
                       height: '24px',
                       backgroundColor: color,
                       border: canvasBackground === color ? '2px solid #000' : '1px solid #ddd',
-                      borderRadius: '4px',
+                      borderRadius:  '4px',
                       cursor: 'pointer'
                     }}
                     title={color}
@@ -513,17 +548,17 @@ export default function EditPortfolio() {
               </div>
             </div>
 
-            <div style={{ marginTop: 16 }}>
-              <label style={{ fontSize: '12px', fontWeight: '500' }}>Canvas Height</label>
+            <div>
+              <label style={{ fontSize:  '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>Canvas Height</label>
               <input
                 type="number"
                 value={canvasHeight}
                 onChange={(e) => setCanvasHeight(Math.max(400, +e.target.value || 1200))}
-                style={{ marginTop: '4px' }}
+                style={{ marginTop: '4px', width: '100%' }}
               />
             </div>
             
-            <div style={{ marginTop: 12 }}>
+            <div>
               <button 
                 className="save-btn" 
                 onClick={() => saveNow({ elements, canvas: { height: canvasHeight, background: canvasBackground } })}
@@ -531,8 +566,6 @@ export default function EditPortfolio() {
                 Save Changes
               </button>
             </div>
-
-            
           </div>
         </aside>
       </div>

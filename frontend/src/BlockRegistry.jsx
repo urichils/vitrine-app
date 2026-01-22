@@ -19,14 +19,16 @@ import {
 import TextBlock from "./blocks/TextBlock";
 import ImageBlock from "./blocks/ImageBlock";
 import ReposBlock from "./blocks/ReposBlock";
-import ContainerBlock from "./blocks/SectionBlock";
 import DividerBlock from "./blocks/DividerBlock";
-import ListBlock from "./blocks/ListBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
 import IconBlock from "./blocks/IconBlock";
 import CodeBlock from "./blocks/CodeBlock";
-import ColumnBlock from "./blocks/ColumnBlock";
 import SectionBlock from "./blocks/SectionBlock";
+import VideoBlock from "./blocks/VideoBlock";
+import SpacerBlock from "./blocks/SpacerBlock";
+import ColumnBlock from "./blocks/ColumnBlock";
+import EmbedBlock from "./blocks/EmbedBlock";
+
 
 // Simple contentEditable block for specialized use cases
 export const EditableBlock = ({ element, update, className, placeholder }) => {
@@ -50,7 +52,7 @@ export const BLOCKS = {
     defaultWidth: 600,
     defaultHeight: 150,
     defaultContent: "",
-    Render: (props) => <TextBlock {...props} />,
+    Render: (props) => <TextBlock {... props} />,
   },
 
   // list: {

@@ -2,54 +2,55 @@
 .repos-block-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display:  flex;
+  flex-direction:  column;
   background: white;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   overflow: visible;
 }
 
 /* Header Section */
 .repos-header {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  padding: 24px 32px;
-  border-bottom: 1px solid #e5e7eb;
-  overflow: visible;
+  padding: 16px 20px;
+  border-bottom:  1px solid #e5e7eb;
+  overflow:  visible;
 }
 
 .repos-header-content {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .repos-header-icon {
-  padding: 12px;
+  padding: 8px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .repos-header-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   color: white;
 }
 
 .repos-header-text h3 {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: white;
   margin: 0;
 }
 
 .repos-header-text p {
-  font-size: 13px;
-  margin: 4px 0 0 0;
+  font-size: 12px;
+  margin: 2px 0 0 0;
   color: #cbd5e1;
 }
 
@@ -61,7 +62,7 @@
 /* Main Content Area */
 .repos-content {
   flex: 1;
-  padding: 32px;
+  padding: 16px;
   overflow: visible;
   background: white;
 }
@@ -72,19 +73,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  gap: 16px;
+  min-height: 200px;
+  gap: 12px;
 }
 
 .repos-loading-spinner {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   color: #94a3b8;
   animation: spin 1s linear infinite;
 }
 
 .repos-loading-text {
-  font-size: 14px;
+  font-size:  12px;
   color: #4b5563;
 }
 
@@ -100,31 +101,31 @@
 /* Error State */
 .repos-error {
   display: flex;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 12px;
   background: #fef2f2;
   border:  1px solid #fecaca;
-  border-radius:  8px;
+  border-radius:  6px;
   align-items: flex-start;
 }
 
 .repos-error-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: #dc2626;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .repos-error-content h4 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #7f1d1d;
-  margin:  0;
+  margin: 0;
 }
 
 .repos-error-content p {
-  font-size: 13px;
+  font-size: 11px;
   color: #b91c1c;
   margin:  4px 0 0 0;
 }
@@ -135,60 +136,48 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
+  min-height: 200px;
   text-align: center;
 }
 
 .repos-empty-icon {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .repos-empty-icon svg {
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   color: #94a3b8;
 }
 
 .repos-empty-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: #1f2937;
-  margin:  0 0 8px 0;
+  margin: 0 0 4px 0;
 }
 
 .repos-empty-text {
-  font-size:  14px;
-  color:  #4b5563;
-  max-width: 280px;
+  font-size: 12px;
+  color: #4b5563;
+  max-width: 220px;
   margin: 0;
 }
 
 /* Repository Grid */
 .repos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
   width: 100%;
   overflow:  visible;
-}
-
-@media (max-width: 1024px) {
-  .repos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .repos-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Repository Card */
@@ -196,10 +185,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px;
+  padding: 14px;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border:  1px solid #e2e8f0;
-  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   color: inherit;
@@ -212,20 +201,20 @@
   content: '';
   position: absolute;
   top: 0;
-  left:  0;
-  right: 0;
-  height: 3px;
+  left: 0;
+  right:  0;
+  height: 2px;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
   opacity: 0;
-  transition:  opacity 0.3s ease;
-  border-radius: 12px 12px 0 0;
+  transition: opacity 0.3s ease;
+  border-radius: 8px 8px 0 0;
   z-index: 1;
 }
 
 .repo-card:hover {
   border-color: #cbd5e1;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .repo-card:hover::before {
@@ -241,19 +230,19 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom:  8px;
   overflow: visible;
 }
 
 .repo-card-title {
-  font-size: 16px;
+  font-size: 13px;
   font-weight:  700;
   color: #0f172a;
-  margin:  0;
+  margin: 0;
   word-break: break-word;
   flex:  1;
-  line-height: 1.4;
+  line-height: 1.3;
   transition: color 0.3s ease;
 }
 
@@ -262,13 +251,13 @@
 }
 
 .repo-card-link-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: #94a3b8;
   flex-shrink: 0;
   opacity: 0;
   transition: all 0.3s ease;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .repo-card:hover .repo-card-link-icon {
@@ -278,31 +267,31 @@
 
 /* Card Description */
 .repo-card-description {
-  font-size: 13px;
+  font-size: 11px;
   color: #475569;
-  margin: 0;
-  line-height: 1.5;
+  margin:  0;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp:  2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   flex-grow: 1;
 }
 
 /* Card Footer */
 .repo-card-footer {
   margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+  border-top:  1px solid #e2e8f0;
   overflow: visible;
 }
 
 .repo-card-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom:  12px;
+  gap: 6px;
+  margin-bottom: 8px;
   overflow: visible;
 }
 
@@ -310,11 +299,11 @@
 .stat-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size:  12px;
-  font-weight: 600;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size:  10px;
+  font-weight:  600;
   transition: all 0.3s ease;
   white-space: nowrap;
   overflow: visible;
@@ -326,8 +315,8 @@
 }
 
 .stat-badge-stars svg {
-  width: 13px;
-  height: 13px;
+  width: 10px;
+  height: 10px;
   color: #d97706;
 }
 
@@ -342,8 +331,8 @@
 }
 
 .stat-badge-forks svg {
-  width: 13px;
-  height: 13px;
+  width: 10px;
+  height: 10px;
   color: #475569;
 }
 
@@ -356,66 +345,69 @@
 .repo-language {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-top: 8px;
+  gap: 6px;
+  padding-top: 6px;
   overflow: visible;
 }
 
 .language-dot {
-  width: 10px;
-  height: 10px;
-  border-radius:  50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 .language-text {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   color: #475569;
 }
 
 /* Sidebar */
 .repos-sidebar {
-  width: 160px;
+  width: 100%;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-  border-left: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 24px;
+  gap: 8px;
+  padding: 12px;
   text-align: center;
   overflow: visible;
+  flex-wrap: wrap;
 }
 
 .repos-sidebar-label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight:  700;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  order: -1;
+  flex:  0 0 100%;
 }
 
 /* Configure Button */
 .repos-configure-btn {
-  width: 100%;
+  flex: 1;
+  min-width: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 20px 16px;
+  gap: 6px;
+  padding: 10px 12px;
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 11px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -424,7 +416,7 @@
   content: '';
   position: absolute;
   top: 0;
-  left:  -100%;
+  left: -100%;
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.1);
@@ -433,8 +425,8 @@
 
 .repos-configure-btn:hover {
   background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .repos-configure-btn:hover::before {
@@ -446,68 +438,20 @@
 }
 
 .repos-configure-btn svg {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
 }
 
 .repos-configure-help {
-  font-size: 11px;
+  font-size: 9px;
   color: #94a3b8;
-  margin-top: 8px;
-  max-width: 140px;
+  margin-top: 4px;
+  max-width: 100px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .repos-block-container {
-    flex-direction: column;
-    overflow: visible;
-  }
-
-  .repos-sidebar {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid #e5e7eb;
-    flex-direction: row;
-    gap: 12px;
-    padding: 16px;
-    overflow: visible;
-  }
-
-  .repos-configure-btn {
-    flex:  1;
-    padding: 12px;
-  }
-
-  .repos-configure-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .repos-sidebar-label {
-    order: -1;
-    flex:  0 0 100%;
-  }
-
-  .repos-content {
-    padding: 16px;
-    overflow: visible;
-  }
-
-  .repos-header {
-    padding: 16px;
-    overflow: visible;
-  }
-
-  .repos-grid {
-    grid-template-columns: 1fr;
-    overflow: visible;
-  }
-}
-
-/* Scroll Styles - only apply to the scrollable content area if needed */
+/* Scroll Styles */
 .repos-content::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .repos-content::-webkit-scrollbar-track {
@@ -516,9 +460,9 @@
 
 .repos-content::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .repos-content::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background:  #94a3b8;
 }
