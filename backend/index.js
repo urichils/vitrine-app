@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const router = express.Router();
@@ -19,6 +20,12 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 app.use('/auth', require('./routes/authRoutes.js'));
 app.use('/portfolio', require('./routes/portfolioRoutes.js'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('Created uploads directory');
+}
 
 
 app.get('/', (req, res) => {

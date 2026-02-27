@@ -10,7 +10,7 @@ import AuthDebugHelper from "../components/AuthDebugHelper";
 import { Link } from "react-router-dom";
 
 const genId = () =>
-  crypto?. randomUUID
+  crypto?.randomUUID
     ? crypto.randomUUID()
     : "id_" + Math.random().toString(36).slice(2, 9);
 
@@ -47,7 +47,7 @@ function Modal({ open, title, value, onClose, onSubmit }) {
   );
 }
 
-function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose, scaleX = 1, scaleY = 1 }) {
+function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose, scaleX = 1, scaleY = 1, portfolioId }) {
   if (!open) return null;
 
   return (
@@ -81,7 +81,7 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Eye size={20} style={{ color: '#6b7280' }} />
-            <h3 style={{ margin: 0, fontSize: '18px', fontWeight:  '600' }}>Preview Mode</h3>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>Preview Mode</h3>
           </div>
           <button
             onClick={onClose}
@@ -114,7 +114,7 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose,
           }}>
             {elements.map((el) => {
               const cfg = BLOCKS[el.type];
-              const Block = cfg?. Render;
+              const Block = cfg?.Render;
 
               return (
                 <div
@@ -123,7 +123,7 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose,
                     position: 'absolute',
                     left: el.x * scaleX,
                     top: el.y * scaleY,
-                    width: el. width * scaleX,
+                    width: el.width * scaleX,
                     minHeight: el.height * scaleY,
                     height: 'auto',
                     pointerEvents: 'auto'
@@ -135,6 +135,7 @@ function PreviewModal({ open, elements, canvasHeight, canvasBackground, onClose,
                       update={() => {}} 
                       openModal={() => {}}
                       readOnly={true}
+                      portfolioId={portfolioId}
                     />
                   ) : (
                     <div>Unknown block</div>
@@ -155,7 +156,7 @@ function PublishModal({ open, onClose, onPublish, publishing }) {
   return (
     <div className="img-url-modal-backdrop">
       <div className="img-url-modal" style={{ maxWidth: '500px' }}>
-        <h3 style={{ display: 'flex', alignItems: 'center', gap:  '12px' }}>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Upload size={24} />
           Publish Portfolio
         </h3>
@@ -241,7 +242,7 @@ export default function EditPortfolio() {
   }, []);
 
   useEffect(() => {
-    if (! user) return;
+    if (!user) return;
     mountedRef.current = true;
 
     (async () => {
@@ -254,13 +255,13 @@ export default function EditPortfolio() {
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
         const text = await res.text();
-        if (! text) throw new Error("Empty response");
+        if (!text) throw new Error("Empty response");
 
         const data = JSON.parse(text);
         if (!mountedRef.current) return;
 
-        setElements(data?. elements || []);
-        if (data. canvas?. height) setCanvasHeight(data.canvas. height);
+        setElements(data?.elements || []);
+        if (data.canvas?.height) setCanvasHeight(data.canvas.height);
         if (data.canvas?.background) setCanvasBackground(data.canvas.background);
       } catch (err) {
         console.error("Failed to load portfolio:", err);
@@ -293,7 +294,7 @@ export default function EditPortfolio() {
   const debouncedSave = useRef(debounce((p) => saveNow(p), 900)).current;
 
   useEffect(() => {
-    if (! loading) debouncedSave({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
+    if (!loading) debouncedSave({ elements, canvas: { height: canvasHeight, background: canvasBackground } });
   }, [elements, canvasHeight, canvasBackground, debouncedSave, loading]);
 
   const handlePublish = async () => {
@@ -320,7 +321,7 @@ export default function EditPortfolio() {
       }
     } catch (err) {
       console.error("Publish failed:", err);
-      alert("Failed to publish portfolio.  Please try again.");
+      alert("Failed to publish portfolio. Please try again.");
     } finally {
       setPublishing(false);
     }
@@ -352,10 +353,10 @@ export default function EditPortfolio() {
     setElements((prev) => prev.filter((p) => p.id !== id));
 
   const openModalFor = (id, title, initial = "") =>
-    setModalState({ open:  true, id, title, value: initial });
+    setModalState({ open: true, id, title, value: initial });
 
   const closeModal = () =>
-    setModalState({ open:  false, id: null, title:  "", value: "" });
+    setModalState({ open: false, id: null, title: "", value: "" });
 
   const submitModal = (val) => {
     if (!modalState.id) return;
@@ -367,7 +368,6 @@ export default function EditPortfolio() {
   return (
     <>
       <div className="canvas-shell-full">
-        {/* Top Action Buttons - Now Below Toolbar */}
         <div className="editor-action-bar">
           <button className="action-btn action-btn-secondary" onClick={() => setPreviewOpen(true)}>
             <Eye size={16} />
@@ -381,7 +381,7 @@ export default function EditPortfolio() {
 
           <button className="action-btn action-btn-ghost">
             <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none', color: 'inherit' }}>
-              {user?. username || "Account"}
+              {user?.username || "Account"}
             </Link>
           </button>
         </div>
@@ -406,12 +406,12 @@ export default function EditPortfolio() {
           >
             <div className="canvas-vw-inner"
               style={{
-                  position: 'relative',
-                  width: '100%',
-                  minHeight: canvasHeight,
-                  height: 'auto',
-                  overflow: 'visible'
-                }}>
+                position: 'relative',
+                width: '100%',
+                minHeight: canvasHeight,
+                height: 'auto',
+                overflow: 'visible'
+              }}>
               {elements.length === 0 && (
                 <div className="canvas-empty">Add blocks from the top to start</div>
               )}
@@ -450,9 +450,9 @@ export default function EditPortfolio() {
                     <div className="canvas-item" onClick={() => setSelectedId(el.id)} id={el.id}>
                       <div className="item-toolbar">
                         <div className="drag-handle"><Move size={14} /></div>
-                        <div style={{ fontSize: 12, color: "#666", marginRight: "auto" }}>{cfg?. label || el.type}</div>
+                        <div style={{ fontSize: 12, color: "#666", marginRight: "auto" }}>{cfg?.label || el.type}</div>
                         <div className="item-actions">
-                          {["image", "embed", "repos", "button", "icon"]. includes(el.type) && (
+                          {["image", "embed", "repos", "button", "icon"].includes(el.type) && (
                             <button
                               className="tiny"
                               onClick={() =>
@@ -470,7 +470,12 @@ export default function EditPortfolio() {
 
                       <div className="item-body">
                         {Block ? (
-                          <Block element={el} update={(p) => update(el.id, p)} openModal={(id) => openModalFor(id, el.type === "repos" ? "GitHub username" : "Set content", el.content)} />
+                          <Block 
+                            element={el} 
+                            update={(p) => update(el.id, p)} 
+                            openModal={(id) => openModalFor(id, el.type === "repos" ? "GitHub username" : "Set content", el.content)}
+                            portfolioId={portfolioId}
+                          />
                         ) : (
                           <div>Unknown block</div>
                         )}
@@ -483,12 +488,10 @@ export default function EditPortfolio() {
           </div>
         </main>
 
-        {/* Settings Icon Button - Bottom Right on Mobile */}
-        <button className="settings-toggle" onClick={() => setPropPanelOpen(! propPanelOpen)} title="Canvas Settings">
+        <button className="settings-toggle" onClick={() => setPropPanelOpen(!propPanelOpen)} title="Canvas Settings">
           <Settings size={20} />
         </button>
 
-        {/* Canvas Settings Panel - Bottom Right, Collapsible on Mobile */}
         <aside className={`prop-panel ${propPanelOpen ? 'open' : ''}`}>
           <div className="prop-panel-header">
             <strong>Canvas Settings</strong>
@@ -499,7 +502,7 @@ export default function EditPortfolio() {
 
           <div className="prop-panel-inner">
             <div>
-              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom:  '4px' }}>
+              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
                 Background Color
               </label>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -509,8 +512,8 @@ export default function EditPortfolio() {
                   onChange={(e) => setCanvasBackground(e.target.value)}
                   style={{ 
                     width: '50px', 
-                    height:  '32px', 
-                    border:  '1px solid #ddd',
+                    height: '32px', 
+                    border: '1px solid #ddd',
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
@@ -518,19 +521,19 @@ export default function EditPortfolio() {
                 <input
                   type="text"
                   value={canvasBackground}
-                  onChange={(e) => setCanvasBackground(e. target.value)}
+                  onChange={(e) => setCanvasBackground(e.target.value)}
                   placeholder="#ffffff"
                   style={{ 
                     flex: 1,
                     padding: '6px 8px',
                     fontSize: '12px',
                     border: '1px solid #ddd',
-                    borderRadius:  '4px'
+                    borderRadius: '4px'
                   }}
                 />
               </div>
               <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
-                {['#ffffff', '#f3f4f6', '#1f2937', '#3b82f6', '#10b981', '#f59e0b']. map(color => (
+                {['#ffffff', '#f3f4f6', '#1f2937', '#3b82f6', '#10b981', '#f59e0b'].map(color => (
                   <button
                     key={color}
                     onClick={() => setCanvasBackground(color)}
@@ -539,7 +542,7 @@ export default function EditPortfolio() {
                       height: '24px',
                       backgroundColor: color,
                       border: canvasBackground === color ? '2px solid #000' : '1px solid #ddd',
-                      borderRadius:  '4px',
+                      borderRadius: '4px',
                       cursor: 'pointer'
                     }}
                     title={color}
@@ -549,7 +552,7 @@ export default function EditPortfolio() {
             </div>
 
             <div>
-              <label style={{ fontSize:  '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>Canvas Height</label>
+              <label style={{ fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '4px' }}>Canvas Height</label>
               <input
                 type="number"
                 value={canvasHeight}
@@ -584,6 +587,7 @@ export default function EditPortfolio() {
         canvasHeight={canvasHeight}
         canvasBackground={canvasBackground}
         onClose={() => setPreviewOpen(false)}
+        portfolioId={portfolioId}
       />
 
       <PublishModal
